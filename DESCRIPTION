@@ -5,8 +5,7 @@ Version: 0.1.0
 Authors@R: c(person("Erin M.", "Buchanan", role = c("aut", "cre"),
                      email = "buchananlab@gmail.com",
                      comment = c(ORCID = "0000-0002-9689-4189")))
-Depends: R (>= 3.1.0)
-Imports: ggplot2, methods, lavaan, broom, cowplot, dplyr, tidyr, introdataviz
+Depends: R (>= 3.1.0), ggplot2, methods, lavaan, broom, cowplot, dplyr, tidyr, introdataviz
 Maintainer: Erin M. Buchanan <buchananlab@gmail.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.

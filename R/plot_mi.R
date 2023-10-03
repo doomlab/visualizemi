@@ -45,11 +45,45 @@
 #' variance/residuals section of the overall graph.}
 #'
 #' @keywords multigroup cfa, sem, lavaan
-#' @import lavaan dplyr tidyr ggplot2
-#' @rdname mgcfa
+#' @import lavaan dplyr ggplot2 introdataviz
+#' @importFrom cowplot plot_grid get_legend
+#'
+#' @examples
+#'
+#' HS.model <- ' visual  =~ x1 + x2 + x3
+#' textual =~ x4 + x5 + x6
+#' speed   =~ x7 + x8 + x9 '
+#'
+#' library(lavaan)
+#'
+#' data("HolzingerSwineford1939")
+#'
+#' saved_model <- cfa(HS.model, data = HolzingerSwineford1939,
+#'  meanstructure = TRUE,
+#'  group = "sex",
+#'  group.equal = c("loadings"))
+#'
+#'  saved_mgcfa <- mgcfa(model = HS.model,
+#'   data = HolzingerSwineford1939,
+#'   group = "sex",
+#'   group.equal = c("loadings", "intercepts", "residuals"),
+#'   meanstructure = TRUE)
+#'
+#' # saved_mi_plots <- plot_mi(data_coef = saved_mgcfa$model_coef,
+#' #  model_step = "Configural", # which model
+#' #  item_name = "x1", # name of observed item
+#' #  x_limits = c(-1,1), # LV limits to graph
+#' #  y_limits = c(min(HolzingerSwineford1939$x1),
+#' #             max(HolzingerSwineford1939$x1)), # Y min and max in data
+#' #  conf.level = .95, # what ci do you want
+#' #  model_results = saved_mgcfa$model_configural, # what model results do you want
+#' #  lv_name = "visual", # which latent is the observed variable on
+#' #  plot_groups = NULL)
+#'
+#' @rdname plot_mi
 #' @export
 
-plot_mgcfa <- function(data_coef, # output from model_coef
+plot_mi <- function(data_coef, # output from model_coef
                        model_step, # which model
                        item_name, # name of observed item
                        x_limits = c(-1,1), # LV limits to graph
@@ -92,7 +126,7 @@ plot_mgcfa <- function(data_coef, # output from model_coef
     filter(grepl(item_name, term)) %>%  # pick a question
     mutate(group = factor(group, levels = names(table(data_coef$group)),
                           labels = group_labels)) %>%
-    filter(group_labels %in% plot_groups)
+    filter(group %in% plot_groups)
 
   # make ribbon data y = slope*x + intercept for ci for slopes
   ribbondata <- bind_rows(

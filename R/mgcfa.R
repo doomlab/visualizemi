@@ -26,7 +26,7 @@
 #' group. For multigroup analyses, you need to format
 #' this data as a list with names for each group.
 #' It is assumed they are in the same order as
-#' \code{sample}.cov.
+#' \code{sample.cov}.
 #' @param group A character name of the group column
 #' included in the \code{data} argument.
 #' @param group.equal A vector of names of the
@@ -59,7 +59,24 @@
 #' increasing equality constraints}
 #'
 #' @keywords multigroup cfa, sem, lavaan
-#' @import lavaan dplyr tidyr
+#' @import lavaan dplyr
+#' @importFrom broom tidy glance
+#'
+#' @examples
+#' HS.model <- ' visual  =~ x1 + x2 + x3
+#' textual =~ x4 + x5 + x6
+#' speed   =~ x7 + x8 + x9 '
+#'
+#' library(lavaan)
+#'
+#' data("HolzingerSwineford1939")
+#'
+#' saved_mgcfa <- mgcfa(model = HS.model,
+#'  data = HolzingerSwineford1939,
+#'  group = "sex",
+#'  group.equal = c("loadings", "intercepts", "residuals"),
+#'  meanstructure = TRUE)
+#'
 #' @rdname mgcfa
 #' @export
 
@@ -76,12 +93,16 @@ mgcfa <- function(model,
 
   # Deal with missing information -------------------------------------------
 
-  if((is.null(data) | is.null(group)) |
-     (is.null(sample.cov) |
-      is.null(sample.mean) |
-      is.null(sample.nobs))){
-    stop("You must define the data and group OR the sample.cov, sample.mean, and sample.nobs")
+  total_data <- sum(c(is.null(data), is.null(group)))
+  total_not_data <- sum(c(is.null(sample.cov),
+                          is.null(sample.mean),
+                          is.null(sample.nobs)))
+  if (total_data != 2){
+    if (total_not_data != 3){
+      stop("You must define the data and group OR the sample.cov, sample.mean, and sample.nobs.")
+    }
   }
+
 
   # Do this if data ---------------------------------------------------------
 
@@ -176,13 +197,13 @@ mgcfa <- function(model,
     model_coef <- bind_rows(
       model_coef,
       tidy(group_models[[i]], conf.level = conf.level) %>%
-        mutate(model = group_names[i])
+        mutate(model = paste0("Group ", group_names[i]))
     )
 
     model_fit <- bind_rows(
       model_fit,
       glance(group_models[[i]]) %>%
-        mutate(model = group_names[i])
+        mutate(model = paste0("Group ", group_names[i]))
     )
   }
 
@@ -213,11 +234,10 @@ mgcfa <- function(model,
   return(list(
     "model_coef" = model_coef,
     "model_fit" = model_fit,
-    "model.overall" = model.overall,
-    "model.group1" = model.group1,
-    "model.group2" = model.group2,
-    "model.configural" = model.configural,
-    unlist(equal_models)
+    "model_overall" = model.overall,
+    "group_models" = group_models,
+    "model_configural" = model.configural,
+    "invariance_models" = equal_models
   ))
 
 }

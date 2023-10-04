@@ -6,17 +6,27 @@
 \usage{
 bootstrapped_partial(
   saved_model,
+  data,
+  model,
+  group,
   nboot = 1000,
   invariance_index,
   invariance_rule,
   invariance_compare,
-  partial_step
+  partial_step,
+  group.equal
 )
 }
 \arguments{
 \item{saved_model}{A saved lavaan model of the
 step you would like to estimate partial
 invariance for.}
+
+\item{data}{The dataframe for the estimation}
+
+\item{model}{The original model lavaan syntax}
+
+\item{group}{The grouping variable column as a character}
 
 \item{nboot}{The number of bootstraps you would like
 to calculate. Please note: large models with many parameters
@@ -45,6 +55,11 @@ Note that for some models this may estimate more than you
 want (i.e., the syntax for factor covariances is \code{~~}
 as well as residuals) but these can be excluded from the
 from the final dataframe.}
+
+\item{group.equal}{The equality constraints for this
+bootstrapping - use this parameter in case you want to
+estimate effect size for a specific partial step
+but continue to hold all other things constrained}
 }
 \value{
 A set of graphs and dataframes.

@@ -6,10 +6,12 @@ Authors@R: c(person("Erin M.", "Buchanan", role = c("aut", "cre"),
                      email = "buchananlab@gmail.com",
                      comment = c(ORCID = "0000-0002-9689-4189")))
 Depends: R (>= 3.1.0)
-Imports: ggplot2, methods, lavaan, broom, cowplot, dplyr, tidyr, introdataviz
+Imports: ggplot2, methods, lavaan, broom, cowplot, dplyr, tidyr, introdataviz, ggridges
 Maintainer: Erin M. Buchanan <buchananlab@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: A package the helps you calculate multigroup CFA, 
+    measurement invariance, partial invariance, visualizations 
+    of those non-invariant parameters, and the potential 
+    effect sizes differences between groups and replication rates. 
 License: LGPL-3
 Encoding: UTF-8
 LazyData: true
@@ -24,3 +26,7 @@ Collate:
     'noncentral_t.R'
     'partial_mi.R'
     'plot_mi.R'
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

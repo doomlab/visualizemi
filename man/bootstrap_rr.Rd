@@ -6,6 +6,9 @@
 \usage{
 bootstrap_rr(
   saved_configural,
+  data,
+  model,
+  group,
   nboot = 1000,
   invariance_index,
   invariance_rule,
@@ -16,6 +19,12 @@ bootstrap_rr(
 \item{saved_configural}{A saved \code{lavaan} model
 of the "configural" model that includes the grouping
 variable but no other equality constraints.}
+
+\item{data}{The dataframe for the estimation}
+
+\item{model}{The original model lavaan syntax}
+
+\item{group}{The grouping variable column as a character}
 
 \item{nboot}{The number of bootstraps you would like
 to calculate. Please note: large models with many parameters

@@ -47,6 +47,7 @@
 #' @keywords multigroup cfa, sem, lavaan
 #' @import lavaan dplyr ggplot2 introdataviz
 #' @importFrom cowplot plot_grid get_legend
+#' @include globals.R
 #'
 #' @examples
 #'
@@ -79,6 +80,7 @@
 #' #  model_results = saved_mgcfa$model_configural, # what model results do you want
 #' #  lv_name = "visual", # which latent is the observed variable on
 #' #  plot_groups = NULL)
+#' @include globals.R
 #'
 #' @rdname plot_mi
 #' @export

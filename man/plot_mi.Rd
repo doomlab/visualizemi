@@ -102,7 +102,6 @@ saved_model <- cfa(HS.model, data = HolzingerSwineford1939,
 #  model_results = saved_mgcfa$model_configural, # what model results do you want
 #  lv_name = "visual", # which latent is the observed variable on
 #  plot_groups = NULL)
-
 }
 \keyword{cfa,}
 \keyword{lavaan}

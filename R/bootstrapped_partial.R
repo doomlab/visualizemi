@@ -14,6 +14,9 @@
 #' @param saved_model A saved lavaan model of the
 #' step you would like to estimate partial
 #' invariance for.
+#' @param data The dataframe for the estimation
+#' @param model The original model lavaan syntax
+#' @param group The grouping variable column as a character
 #' @param nboot The number of bootstraps you would like
 #' to calculate. Please note: large models with many parameters
 #' will run slowly depending on your computer.
@@ -37,6 +40,10 @@
 #' want (i.e., the syntax for factor covariances is \code{~~}
 #' as well as residuals) but these can be excluded from the
 #' from the final dataframe.
+#' @param group.equal The equality constraints for this
+#' bootstrapping - use this parameter in case you want to
+#' estimate effect size for a specific partial step
+#' but continue to hold all other things constrained
 #'
 #' @return A set of graphs and dataframes.
 #'
@@ -55,8 +62,10 @@
 #' visualizations in your own style. }
 #'
 #' @keywords multigroup cfa, sem, lavaan
-#' @import lavaan dplyr ggplot2
+#' @import lavaan dplyr ggplot2 broom
 #' @importFrom tidyr pivot_wider
+#' @importFrom broom tidy glance
+#' @include globals.R
 #'
 #' @examples
 #' library(lavaan)
@@ -87,11 +96,15 @@
 #' @export
 
 bootstrapped_partial <- function(saved_model,
+                                 data,
+                                 model,
+                                 group,
                                  nboot = 1000,
                                  invariance_index,
                                  invariance_rule,
                                  invariance_compare,
-                                 partial_step){
+                                 partial_step,
+                                 group.equal){
 
 
   # Deal with missing information  ------------------------------------------
@@ -106,11 +119,16 @@ bootstrapped_partial <- function(saved_model,
   # loadings: loadings on factors =~
   # thresholds: when using ordered models |
 
+  tol = 1e-5
+
   if(missing(saved_model)){stop("You must include a saved lavaan model.")}
   if(missing(invariance_index)){stop("You must includedan invariance_index")}
   if(missing(invariance_rule)){stop("You must include an invariance_rule.")}
   if(missing(invariance_compare)){stop("You must include an invariance_compare.")}
-  if(missing(partial_step)){stop("You must include a partial step character vector.")}
+  if(missing(data)){stop("You must include a dataframe to analyze.")}
+  if(missing(model)){stop("You must include the original model syntax.")}
+  if(missing(group)){stop("You must include a group column as a character vector.")}
+  if(missing(group.equal)){stop("You must include the equality constraints.")}
 
   # get partial_step
   op_filter <- ifelse(
@@ -132,22 +150,17 @@ bootstrapped_partial <- function(saved_model,
     unique()
 
   # deal with busted models
-  test_model <- function(saved_model, temp.DF, i, partial.values, group = NULL) {
+  test_model <- function(saved_model, temp.DF, i, partial.values, group,
+                         model, group.equal) {
     tryCatch(
       {
-        if(is.null(group)){
-          temp.model <- lavaan::update(saved_model,
-                                       data = temp.DF,
-                                       group.partial = partial.values[i])
-          return(temp.model)
-        } else{
-
           temp.model <- lavaan::update(saved_model,
                                          data = temp.DF,
                                          group = group,
-                                         group.partial = partial.values[i])
+                                         group.partial = partial.values[i],
+                                         model = model,
+                                         group.equal = group.equal)
           return(temp.model)
-        }
 
       }, warning = function(x){
         # just move on
@@ -163,10 +176,10 @@ bootstrapped_partial <- function(saved_model,
   for (p in 1:nboot){
 
     # bootstrap the data
-    DF <- get(saved_model@call$data)
+    DF <- data
     temp.DF <- DF %>%
       slice_sample(n = nrow(DF), replace = TRUE) %>%
-      mutate(random_group = sample(c(saved_model@Data@group.label),
+      mutate(random_group = sample(DF[ , group],
                                    size = nrow(DF),
                                    replace = TRUE))
 
@@ -178,9 +191,16 @@ bootstrapped_partial <- function(saved_model,
       temp.model <- NULL
       random.model <- NULL
 
-      temp.model <- test_model(saved_model, temp.DF, i,  partial.values)
-      random.model <- test_model(saved_model, temp.DF, i,
-                                 partial.values, group = "random_group")
+      temp.model <- test_model(saved_model,
+                               temp.DF, i,
+                               partial.values,
+                               group,
+                               model, group.equal)
+      random.model <- test_model(saved_model,
+                                 temp.DF, i,
+                                 partial.values,
+                                 "random_group",
+                                 model, group.equal)
 
       # get estimates of relaxed parameters
       if(!is.null(temp.model) & !is.null(random.model)){
@@ -216,8 +236,8 @@ bootstrapped_partial <- function(saved_model,
   boot_DF <- as.data.frame(bind_rows(boot_results))
   boot_DF$boot_difference <- unname(boot_DF[ , 2] - boot_DF[ , 3])
   boot_DF$random_difference <- unname(boot_DF[ , 4] - boot_DF[ , 5])
-  boot_DF$boot_index_difference <- (invariance_compare - boot_DF$boot_fit) <= invariance_rule
-  boot_DF$random_index_difference <- (invariance_compare - boot_DF$random_fit) <= invariance_rule
+  boot_DF$boot_index_difference <- (invariance_compare - boot_DF$boot_fit) <= (invariance_rule+tol)
+  boot_DF$random_index_difference <- (invariance_compare - boot_DF$random_fit) <= (invariance_rule+tol)
 
   boot_long <- bind_rows(
     boot_DF %>%
@@ -252,7 +272,8 @@ bootstrapped_partial <- function(saved_model,
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
           legend.position = "bottom") +
     facet_wrap(~index_difference, labeller = as_labeller(label_graph)) +
-    scale_color_discrete(name = "Type of Estimate")
+    scale_color_discrete(name = "Type of Estimate") %>%
+    coord_flip()
 
   boot_summary <- boot_DF %>%
     group_by(term, boot_index_difference) %>%
@@ -284,6 +305,18 @@ bootstrapped_partial <- function(saved_model,
       by = c("term", "invariant")
     )
 
+  boot_effects <- boot_summary %>%
+    ungroup() %>%
+    select(term, invariant, n_boot, n_random) %>%
+    filter(invariant == FALSE) %>%
+    select(-invariant) %>%
+    rename(non_invariant = n_boot ,
+           random_non_invariant = n_random) %>%
+    mutate(non_invariant = non_invariant / nboot,
+           random_non_invariant = random_non_invariant / nboot,
+           h = 2*(asin(sqrt(non_invariant))-asin(sqrt(random_non_invariant))))
+
+
   for (i in 1:nrow(boot_summary)){
 
     if(!is.na(boot_summary$n_boot[i]) &
@@ -298,6 +331,10 @@ bootstrapped_partial <- function(saved_model,
       boot_summary$d_boot_low[i] <- temp$dlow
       boot_summary$d_boot[i] <- temp$d
       boot_summary$d_boot_high[i] <- temp$dhigh
+    } else{
+      boot_summary$d_boot_low[i] <- NA
+      boot_summary$d_boot[i] <- NA
+      boot_summary$d_boot_high[i] <- NA
     }
 
     if(!is.na(boot_summary$n_random[i]) &
@@ -312,6 +349,10 @@ bootstrapped_partial <- function(saved_model,
       boot_summary$d_random_low[i] <- temp$dlow
       boot_summary$d_random[i] <- temp$d
       boot_summary$d_random_high[i] <- temp$dhigh
+    } else{
+      boot_summary$d_random_low[i] <- NA
+      boot_summary$d_random[i] <- NA
+      boot_summary$d_random_high[i] <- NA
     }
 
     }
@@ -350,12 +391,49 @@ bootstrapped_partial <- function(saved_model,
     geom_hline(yintercept = 0) +
     coord_flip()
 
+    DF_long <-
+    bind_rows(
+      boot_DF %>%
+        select(term, boot_index_difference, boot_1, boot_2) %>%
+        pivot_longer(cols = c(boot_1, boot_2),
+                     names_to = "group",
+                     values_to = "estimate") %>%
+        rename(invariant = boot_index_difference) %>%
+        mutate(type = "Bootstrapped"),
+      boot_DF %>%
+        select(term, random_index_difference, random_1, random_2) %>%
+        pivot_longer(cols = c(random_1, random_2),
+                     names_to = "group",
+                     values_to = "estimate") %>%
+        rename(invariant = random_index_difference) %>%
+        mutate(type = "Random")
+
+    ) %>%
+      mutate(group = gsub("_1|_2", "", group),
+             invariant = factor(invariant,
+                                levels = c("TRUE", "FALSE"),
+                                labels = c("Invariant", "Non-Invariant")))
+
+  density_plot <- ggplot(DF_long, aes(x = estimate, y = term, fill = group)) +
+    geom_density_ridges(
+      # jittered_points = TRUE, # useful if you want to see the dots
+      alpha = 0.7, scale = 0.9
+    ) +
+    # or facet_grid(~invariant*type) for every parameter on an entire row
+    facet_grid(invariant~type) +
+    theme_classic() +
+    xlab("Estimated Score") +
+    ylab("Parameter") +
+    scale_fill_discrete(name = "Group")
+
   # print out results/suggestions
   return(list(
     "invariance_plot" = invariance_plot,
     "effect_invariance_plot" = effect_invariance_plot,
+    "density_plot" = density_plot,
     "boot_DF" = boot_DF,
-    "boot_summary" = boot_summary
+    "boot_summary" = boot_summary,
+    "boot_effects" = boot_effects
   ))
 }
 

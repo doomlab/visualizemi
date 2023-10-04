@@ -61,6 +61,7 @@
 #' @keywords multigroup cfa, sem, lavaan
 #' @import lavaan dplyr
 #' @importFrom broom tidy glance
+#' @include globals.R
 #'
 #' @examples
 #' HS.model <- ' visual  =~ x1 + x2 + x3

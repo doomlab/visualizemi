@@ -11,6 +11,9 @@
 #' @param saved_configural A saved \code{lavaan} model
 #' of the "configural" model that includes the grouping
 #' variable but no other equality constraints.
+#' @param data The dataframe for the estimation
+#' @param model The original model lavaan syntax
+#' @param group The grouping variable column as a character
 #' @param nboot The number of bootstraps you would like
 #' to calculate. Please note: large models with many parameters
 #' will run slowly depending on your computer.
@@ -69,25 +72,30 @@
 #' @export
 
 bootstrap_rr <- function(saved_configural,
+                         data,
+                         model,
+                         group,
                          nboot = 1000,
                          invariance_index,
                          invariance_rule,
                          group.equal){
 
 
+  tol = 1e-5
   # Deal with missing information  ------------------------------------------
   if(missing(saved_configural)){stop("You must include the saved model.")}
   if(saved_configural@Data@data.type != "full"){stop("You must have full data for this function.")}
 
   # get the data
-  DF <- get(saved_configural@call$data)
+  DF <- data
 
   # try catch
   # test the model
-  test_model_configural <- function(temp.fit, temp.DF, group) {
+  test_model_configural <- function(temp.fit, temp.DF, group, model) {
     tryCatch(
       {
           temp.partials <- update(temp.fit,
+                                  model = model,
                                   data = temp.DF,
                                   group = group)
           return(temp.partials)
@@ -102,12 +110,13 @@ bootstrap_rr <- function(saved_configural,
     )
   }
 
-  test_model <- function(temp.fit, temp.DF, group.equal, group) {
+  test_model <- function(temp.fit, temp.DF, group.equal, group, model) {
     tryCatch(
       {
 
           temp.partials <- update(temp.fit,
                                   data = temp.DF,
+                                  model,
                                   group.equal = group.equal,
                                   group = group)
           return(temp.partials)
@@ -134,13 +143,13 @@ bootstrap_rr <- function(saved_configural,
 
       temp.DF <- DF %>%
         slice_sample(n = nrow(DF), replace = TRUE) %>%
-        mutate(random_group = sample(c(saved_configural@Data@group.label),
+        mutate(random_group = sample(DF[ , group],
                                      size = nrow(DF),
                                      replace = TRUE))
 
       # update the model
-      temp.fit <- test_model_configural(saved_configural, temp.DF, saved_configural@Data@group)
-      random.fit <- test_model_configural(saved_configural, temp.DF, "random_group")
+      temp.fit <- test_model_configural(saved_configural, temp.DF, group, model)
+      random.fit <- test_model_configural(saved_configural, temp.DF, "random_group", model)
 
       # get rule comparison
       if(!is.null(temp.fit)){
@@ -166,8 +175,8 @@ bootstrap_rr <- function(saved_configural,
       temp.partials <- NULL
       random.partials <- NULL
 
-      temp.partials <- test_model(temp.fit, temp.DF, group.equal[1:p], saved_configural@Data@group)
-      random.partials <- test_model(random.fit, temp.DF, group.equal[1:p], "random_group")
+      temp.partials <- test_model(temp.fit, temp.DF, group.equal[1:p], group, model)
+      random.partials <- test_model(random.fit, temp.DF, group.equal[1:p], "random_group", model)
 
       # test if not null
       if(!is.null(temp.partials)){
@@ -203,7 +212,7 @@ bootstrap_rr <- function(saved_configural,
     group_by(model_number) %>%
     mutate(model_difference = lag(fit_index) - fit_index) %>%
     filter(!is.na(model_difference)) %>%
-    mutate(invariant = model_difference <= invariance_rule) %>%
+    mutate(invariant = model_difference <= (invariance_rule+tol)) %>%
     filter(!invariant) %>%
     slice_head() %>%
     group_by(model) %>%
@@ -217,7 +226,7 @@ bootstrap_rr <- function(saved_configural,
         group_by(model_number) %>%
         mutate(model_difference = lag(fit_index) - fit_index) %>%
         filter(!is.na(model_difference)) %>%
-        mutate(invariant = model_difference <= invariance_rule) %>%
+        mutate(invariant = model_difference <= (invariance_rule+tol)) %>%
         filter(!invariant) %>%
         slice_head() %>%
         group_by(model) %>%

@@ -35,6 +35,8 @@
 #' @keywords multigroup cfa, sem, lavaan
 #' @import lavaan dplyr ggplot2
 #'
+#' @include globals.R
+#'
 #' @examples
 #' HS.model <- ' visual  =~ x1 + x2 + x3
 #' textual =~ x4 + x5 + x6
@@ -84,8 +86,10 @@ partial_mi <- function(saved_model,
   # loadings: loadings on factors =~
   # thresholds: when using ordered models |
 
-  if(missing(saved_model) | missing(partial_step) | missing(group.equal)) {
-    stop("You must define the saved model and partial step.")
+  if(missing(saved_model) | missing(partial_step) |
+     missing(group.equal) | missing(data) | missing(model) |
+     missing(group)) {
+    stop("You must define all parameters!")
   }
 
   # get partial_step

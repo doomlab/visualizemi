@@ -54,15 +54,21 @@
 #' \item{effect_invariance_plot}{A ggplot2 object that
 #' visualizes the effect sizes of the differences of the
 #' invariance plot in a forest plot style. }
+#' \item{density_plot}{A ggplot2 object that
+#' visualizes the raw data of the boot_DF comparing
+#' groups and invariance results.}
 #' \item{boot_DF}{A dataframe of the bootstrapped and
 #' randomized results.}
 #' \item{boot_summary}{A dataframe of the summary of the
 #' bootstrapped and random results with effect sizes. Note:
 #' these last two dataframes can be used to recreate the
 #' visualizations in your own style. }
+#' \item{boot_effects}{A dataframe of the summary of the
+#' bootstrapped and random results with effect sizes for
+#' replication rates. }
 #'
 #' @keywords multigroup cfa, sem, lavaan
-#' @import lavaan dplyr ggplot2 broom
+#' @import lavaan dplyr ggplot2 broom ggridges
 #' @importFrom tidyr pivot_wider
 #' @importFrom broom tidy glance
 #' @include globals.R
@@ -81,11 +87,15 @@
 #' # not run to save load time
 #' # saved_boot <- bootstrapped_partial(
 #' #  saved_model = saved_model,
-#' # nboot = 100,
+#' #  data = HolzingerSwineford1939,
+#' #  model = HS.model,
+#' #  group = "sex",
+#' #  nboot = 100,
 #' #  invariance_index = "cfi",
 #' #  invariance_rule = .01,
-#' # invariance_compare = fitmeasures(saved_model, "cfi"),
-#' #  partial_step = c("loadings"))
+#' #  invariance_compare = fitmeasures(saved_model, "cfi"),
+#' #  partial_step = c("loadings"),
+#' #  group.equal = c("loadings"))
 #'
 #' # saved_boot$boot_DF
 #' # saved_boot$boot_summary
@@ -272,7 +282,7 @@ bootstrapped_partial <- function(saved_model,
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
           legend.position = "bottom") +
     facet_wrap(~index_difference, labeller = as_labeller(label_graph)) +
-    scale_color_discrete(name = "Type of Estimate") %>%
+    scale_color_discrete(name = "Type of Estimate") +
     coord_flip()
 
   boot_summary <- boot_DF %>%
@@ -409,7 +419,8 @@ bootstrapped_partial <- function(saved_model,
         mutate(type = "Random")
 
     ) %>%
-      mutate(group = gsub("_1|_2", "", group),
+      mutate(group = gsub("boot_1|random_1", "Group 1", group),
+             group = gsub("boot_2|random_2", "Group 2", group),
              invariant = factor(invariant,
                                 levels = c("TRUE", "FALSE"),
                                 labels = c("Invariant", "Non-Invariant")))

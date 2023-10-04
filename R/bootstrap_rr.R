@@ -59,14 +59,17 @@
 #'  meanstructure = TRUE,
 #'  group = "sex")
 #'
-#' saved_boot <- bootstrap_rr(
-#'  saved_configural = saved_configural,
-#'  nboot = 10, # don't do this - this is to make it run fast
-#'  invariance_index = "cfi",
-#'  invariance_rule = .01,
-#'  group.equal = c("loadings", "intercepts", "residuals"))
+#' # saved_boot <- bootstrap_rr(
+#' #  saved_configural = saved_configural,
+#' #  data = HolzingerSwineford1939,
+#' #  model = HS.model,
+#' #  group = "sex",
+#' #  nboot = 100, # don't do this - this is to make it run fast
+#' #  invariance_index = "cfi",
+#' #  invariance_rule = .01,
+#' #  group.equal = c("loadings", "intercepts", "residuals"))
 #'
-#'  saved_boot
+#' #  saved_boot
 #'
 #' @rdname bootstrap_rr
 #' @export

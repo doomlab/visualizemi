@@ -71,12 +71,18 @@ between groups. These are separated by "invariant" and
 \item{effect_invariance_plot}{A ggplot2 object that
 visualizes the effect sizes of the differences of the
 invariance plot in a forest plot style. }
+\item{density_plot}{A ggplot2 object that
+visualizes the raw data of the boot_DF comparing
+groups and invariance results.}
 \item{boot_DF}{A dataframe of the bootstrapped and
 randomized results.}
 \item{boot_summary}{A dataframe of the summary of the
 bootstrapped and random results with effect sizes. Note:
 these last two dataframes can be used to recreate the
 visualizations in your own style. }
+\item{boot_effects}{A dataframe of the summary of the
+bootstrapped and random results with effect sizes for
+replication rates. }
 }
 \description{
 A function to bootstrap a partially invariant
@@ -104,11 +110,15 @@ saved_model <- cfa(HS.model, data = HolzingerSwineford1939,
 # not run to save load time
 # saved_boot <- bootstrapped_partial(
 #  saved_model = saved_model,
-# nboot = 100,
+#  data = HolzingerSwineford1939,
+#  model = HS.model,
+#  group = "sex",
+#  nboot = 100,
 #  invariance_index = "cfi",
 #  invariance_rule = .01,
-# invariance_compare = fitmeasures(saved_model, "cfi"),
-#  partial_step = c("loadings"))
+#  invariance_compare = fitmeasures(saved_model, "cfi"),
+#  partial_step = c("loadings"),
+#  group.equal = c("loadings"))
 
 # saved_boot$boot_DF
 # saved_boot$boot_summary

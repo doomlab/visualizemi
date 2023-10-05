@@ -235,7 +235,10 @@ bootstrap_rr <- function(saved_configural,
         group_by(model) %>%
         summarize(random_non_invariant = n()/nboot),
       by = "model"
-    ) %>% mutate(h = 2*(asin(sqrt(non_invariant))-asin(sqrt(random_non_invariant))))
+    ) %>%
+    mutate(non_invariant = ifelse(is.na(non_invariant), 0, non_invariant),
+           random_non_invariant = ifelse(is.na(random_non_invariant), 0, random_non_invariant),
+           h = 2*(asin(sqrt(non_invariant))-asin(sqrt(random_non_invariant))))
 
   # print out results/suggestions
   return(boot_DF)

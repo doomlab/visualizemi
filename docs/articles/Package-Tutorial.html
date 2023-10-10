@@ -79,6 +79,41 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">introdataviz</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/ggridges/" class="external-link">ggridges</a></span><span class="op">)</span></span></code></pre></div>
+<p>Measurement invariance is typically analyzed using confirmatory
+factor analysis, specifically, multi-group confirmatory factor analysis
+(MGCFA) or less often, with item response theory <span class="citation">(Stark, Chernyshenko, and Drasgow 2006; Tay, Meade, and
+Cao 2015)</span>. First, the model is examined with the factor structure
+proposed for the latent and observed variables, and then often these
+models are assessed for each group separately. The two models are then
+combined together into one nested CFA in order to determine configural
+invariance. Configural invariance tests if the proposed factor structure
+is the same between groups. In this model, all other estimated
+parameters are allowed to vary between groups. The general approach is
+to use this model as a baseline for starting a sequential analysis of
+further restrictions between group parameters (i.e., more restrictive
+with each step). However, models without configural invariance can occur
+and often point to misspecification for the observed and latent
+variables within one group (i.e., cross loadings of items onto other
+latent variables or correlated error terms for one group only).</p>
+<p>Next, the estimated parameter between each observed variable and its
+latent variable are constrained to be equal between groups for metric
+invariance. For example, item 1’s factor loading must be equal to item
+1’s factor loading for each group. This test examines if the items
+represent the same relationship to the latent variable, or if specific
+items have weaker or stronger relationships in specific groups. Finding
+non-invariance at this stage generally points to items that have
+different functioning or interpretation for one group. At the third
+model, the item intercepts (i.e., item averages) are restricted across
+groups for scalar invariance. Scalar non-invariance would indicate that
+items have the same strength of relationship with their latent variable,
+just one group has a higher overall average on that item. Last (although
+sometimes not used), we may consider constraining error variances for
+each observed variable to be equal across groups for strict invariance.
+Strict non-invariance can occur when one group has a higher range of
+values on the observed variable, thus showing a larger variance. For
+example, if using a Likert scale, one group may use the full 1 to 7
+range (creating a flatter distribution and larger variance), while the
+other group shows a ceiling effect of only using 5 to 7.</p>
 <div class="section level2">
 <h2 id="multigroup-analysis">Multigroup analysis<a class="anchor" aria-label="anchor" href="#multigroup-analysis"></a>
 </h2>
@@ -1340,7 +1375,8 @@ bootstrapped data with random group assignment.</p>
 <span>  model <span class="op">=</span> <span class="va">HS.model</span>,</span>
 <span>  <span class="co"># group variable in the dataset</span></span>
 <span>  group <span class="op">=</span> <span class="st">"sex"</span>, </span>
-<span>  <span class="co"># nubmer of bootstraps, 100 to make this run faster for examples</span></span>
+<span>  <span class="co"># number of bootstraps</span></span>
+<span>  <span class="co"># this is set to a low number to compile quickly for cran</span></span>
 <span>  nboot <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  <span class="co"># name of the fit measure you want to use, make sure it's lavaan</span></span>
 <span>  invariance_index <span class="op">=</span> <span class="st">"cfi"</span>,</span>
@@ -1356,26 +1392,30 @@ bootstrapped data with random group assignment.</p>
 <th align="left">model</th>
 <th align="right">non_invariant</th>
 <th align="right">random_non_invariant</th>
-<th align="right">h</th>
+<th align="right">h_nmi</th>
+<th align="right">h_mi</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="left">intercepts</td>
-<td align="right">0.12</td>
-<td align="right">0.00</td>
-<td align="right">0.7074832</td>
+<td align="right">0.18</td>
+<td align="right">0.02</td>
+<td align="right">0.592504</td>
+<td align="right">-0.592504</td>
 </tr>
 <tr class="even">
 <td align="left">loadings</td>
-<td align="right">0.82</td>
-<td align="right">0.06</td>
-<td align="right">1.7703605</td>
+<td align="right">0.80</td>
+<td align="right">0.08</td>
+<td align="right">1.640784</td>
+<td align="right">-1.640784</td>
 </tr>
 <tr class="odd">
 <td align="left">residuals</td>
-<td align="right">0.06</td>
-<td align="right">0.06</td>
-<td align="right">0.0000000</td>
+<td align="right">0.02</td>
+<td align="right">0.10</td>
+<td align="right">-0.359707</td>
+<td align="right">0.359707</td>
 </tr>
 </tbody>
 </table>
@@ -1477,79 +1517,79 @@ saved output.</p>
 <tbody>
 <tr class="odd">
 <td align="left">visual =~ x1</td>
-<td align="right">0.4392883</td>
-<td align="right">0.8243858</td>
-<td align="right">0.7095297</td>
-<td align="right">0.6134428</td>
-<td align="right">0.8973594</td>
-<td align="right">0.9174156</td>
-<td align="right">-0.3850974</td>
-<td align="right">0.0960869</td>
+<td align="right">0.6921468</td>
+<td align="right">0.7429129</td>
+<td align="right">0.7077571</td>
+<td align="right">0.7070192</td>
+<td align="right">0.8912269</td>
+<td align="right">0.9009994</td>
+<td align="right">-0.0507661</td>
+<td align="right">0.0007379</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
 <td align="left">visual =~ x2</td>
-<td align="right">0.0627330</td>
-<td align="right">0.5035717</td>
-<td align="right">0.3149026</td>
-<td align="right">0.2929948</td>
-<td align="right">0.8978714</td>
-<td align="right">0.9163357</td>
-<td align="right">-0.4408387</td>
-<td align="right">0.0219078</td>
+<td align="right">0.3274462</td>
+<td align="right">0.5525799</td>
+<td align="right">0.4316120</td>
+<td align="right">0.4537346</td>
+<td align="right">0.8909827</td>
+<td align="right">0.9000020</td>
+<td align="right">-0.2251337</td>
+<td align="right">-0.0221225</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
 <td align="left">visual =~ x3</td>
-<td align="right">0.3271396</td>
-<td align="right">0.6234332</td>
-<td align="right">0.5601418</td>
-<td align="right">0.4858317</td>
-<td align="right">0.8963534</td>
-<td align="right">0.9164606</td>
-<td align="right">-0.2962936</td>
-<td align="right">0.0743102</td>
+<td align="right">0.5842616</td>
+<td align="right">0.5716769</td>
+<td align="right">0.5999994</td>
+<td align="right">0.5971209</td>
+<td align="right">0.8904904</td>
+<td align="right">0.9000563</td>
+<td align="right">0.0125847</td>
+<td align="right">0.0028785</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
 <td align="left">textual =~ x4</td>
-<td align="right">0.8621928</td>
-<td align="right">0.8988193</td>
-<td align="right">0.8938119</td>
-<td align="right">0.8589349</td>
-<td align="right">0.8973594</td>
-<td align="right">0.9174156</td>
-<td align="right">-0.0366266</td>
-<td align="right">0.0348770</td>
+<td align="right">0.8545056</td>
+<td align="right">0.8700357</td>
+<td align="right">0.8254305</td>
+<td align="right">0.8901618</td>
+<td align="right">0.8912269</td>
+<td align="right">0.9009994</td>
+<td align="right">-0.0155301</td>
+<td align="right">-0.0647313</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
 <td align="left">textual =~ x5</td>
-<td align="right">0.8605323</td>
-<td align="right">0.8493649</td>
-<td align="right">0.8666733</td>
-<td align="right">0.8404411</td>
-<td align="right">0.8977725</td>
-<td align="right">0.9173318</td>
-<td align="right">0.0111673</td>
-<td align="right">0.0262322</td>
+<td align="right">0.8555760</td>
+<td align="right">0.8979268</td>
+<td align="right">0.8811380</td>
+<td align="right">0.8806337</td>
+<td align="right">0.8925842</td>
+<td align="right">0.9027089</td>
+<td align="right">-0.0423508</td>
+<td align="right">0.0005043</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
 <td align="left">textual =~ x6</td>
-<td align="right">0.8424733</td>
-<td align="right">0.8685337</td>
-<td align="right">0.8810257</td>
-<td align="right">0.8383616</td>
-<td align="right">0.8964948</td>
-<td align="right">0.9191618</td>
-<td align="right">-0.0260604</td>
-<td align="right">0.0426640</td>
+<td align="right">0.8640324</td>
+<td align="right">0.8263942</td>
+<td align="right">0.8225814</td>
+<td align="right">0.8509737</td>
+<td align="right">0.8917560</td>
+<td align="right">0.9014916</td>
+<td align="right">0.0376382</td>
+<td align="right">-0.0283923</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 </tr>
@@ -1619,591 +1659,366 @@ saved output.</p>
 <tr class="odd">
 <td align="left">speed =~ x7</td>
 <td align="left">FALSE</td>
-<td align="right">0.5275904</td>
-<td align="right">0.5460581</td>
-<td align="right">0.1099876</td>
-<td align="right">0.1271573</td>
-<td align="right">-0.0184677</td>
-<td align="right">0.1254067</td>
-<td align="right">0.8719450</td>
-<td align="right">0.0193906</td>
-<td align="right">47</td>
-<td align="right">0.5390879</td>
-<td align="right">0.5301020</td>
-<td align="right">0.1031845</td>
-<td align="right">0.0953927</td>
-<td align="right">0.0089859</td>
-<td align="right">0.0732372</td>
-<td align="right">0.8989828</td>
-<td align="right">0.0160300</td>
-<td align="right">35</td>
-<td align="right">-0.5598539</td>
-<td align="right">-0.1553436</td>
-<td align="right">0.2500072</td>
-<td align="right">-0.3786651</td>
-<td align="right">0.0904329</td>
-<td align="right">0.5588680</td>
-</tr>
-<tr class="even">
-<td align="left">speed =~ x7</td>
-<td align="left">TRUE</td>
-<td align="right">0.6320401</td>
-<td align="right">0.5655562</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">0.0664839</td>
-<td align="right">NA</td>
-<td align="right">0.9339295</td>
-<td align="right">NA</td>
-<td align="right">1</td>
-<td align="right">0.5823417</td>
-<td align="right">0.5839678</td>
-<td align="right">0.0634859</td>
-<td align="right">0.0822052</td>
-<td align="right">-0.0016261</td>
-<td align="right">0.0724622</td>
-<td align="right">0.9339842</td>
-<td align="right">0.0093798</td>
-<td align="right">13</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.7906975</td>
-<td align="right">-0.0221404</td>
-<td align="right">0.7468753</td>
-</tr>
-<tr class="odd">
-<td align="left">speed =~ x8</td>
-<td align="left">FALSE</td>
-<td align="right">0.7385447</td>
-<td align="right">0.8028889</td>
-<td align="right">0.1056284</td>
-<td align="right">0.0989455</td>
-<td align="right">-0.0643442</td>
-<td align="right">0.1574512</td>
-<td align="right">0.8807546</td>
-<td align="right">0.0189614</td>
-<td align="right">44</td>
-<td align="right">0.7245447</td>
-<td align="right">0.7009876</td>
-<td align="right">0.0976271</td>
-<td align="right">0.1223571</td>
-<td align="right">0.0235571</td>
-<td align="right">0.1164194</td>
-<td align="right">0.9019859</td>
-<td align="right">0.0148492</td>
-<td align="right">33</td>
-<td align="right">-1.0552478</td>
-<td align="right">-0.6287202</td>
-<td align="right">-0.1987098</td>
-<td align="right">-0.2719058</td>
-<td align="right">0.2128302</td>
-<td align="right">0.6959159</td>
-</tr>
-<tr class="even">
-<td align="left">speed =~ x8</td>
-<td align="left">TRUE</td>
-<td align="right">0.7376869</td>
-<td align="right">0.7809340</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.0432471</td>
-<td align="right">NA</td>
-<td align="right">0.9347320</td>
-<td align="right">NA</td>
-<td align="right">1</td>
-<td align="right">0.7196799</td>
-<td align="right">0.7263670</td>
-<td align="right">0.0839504</td>
-<td align="right">0.0373715</td>
-<td align="right">-0.0066871</td>
-<td align="right">0.0794758</td>
-<td align="right">0.9343295</td>
-<td align="right">0.0095760</td>
-<td align="right">12</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.9024749</td>
-<td align="right">-0.1029129</td>
-<td align="right">0.6989708</td>
-</tr>
-<tr class="odd">
-<td align="left">speed =~ x9</td>
-<td align="left">FALSE</td>
-<td align="right">0.6942934</td>
-<td align="right">0.6193527</td>
-<td align="right">0.1746049</td>
-<td align="right">0.1630839</td>
-<td align="right">0.0749407</td>
-<td align="right">0.3249855</td>
-<td align="right">0.8857989</td>
-<td align="right">0.0210496</td>
-<td align="right">44</td>
-<td align="right">0.6702616</td>
-<td align="right">0.7061699</td>
-<td align="right">0.1281784</td>
-<td align="right">0.1270914</td>
-<td align="right">-0.0359083</td>
-<td align="right">0.1945183</td>
-<td align="right">0.9022137</td>
-<td align="right">0.0178374</td>
-<td align="right">34</td>
-<td align="right">0.0192526</td>
-<td align="right">0.4435864</td>
-<td align="right">0.8654052</td>
-<td align="right">-0.7580484</td>
-<td align="right">-0.2813333</td>
-<td align="right">0.1974886</td>
-</tr>
-<tr class="even">
-<td align="left">speed =~ x9</td>
-<td align="left">TRUE</td>
-<td align="right">0.5558197</td>
-<td align="right">0.8428882</td>
-<td align="right">0.0807897</td>
-<td align="right">0.0234325</td>
-<td align="right">-0.2870685</td>
-<td align="right">0.1042222</td>
-<td align="right">0.9373462</td>
-<td align="right">0.0101153</td>
-<td align="right">2</td>
-<td align="right">0.6888319</td>
-<td align="right">0.6972144</td>
-<td align="right">0.1039198</td>
-<td align="right">0.0685695</td>
-<td align="right">-0.0083824</td>
-<td align="right">0.1187059</td>
-<td align="right">0.9349166</td>
-<td align="right">0.0094305</td>
-<td align="right">12</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.8947808</td>
-<td align="right">-0.0952144</td>
-<td align="right">0.7065005</td>
-</tr>
-<tr class="odd">
-<td align="left">textual =~ x4</td>
-<td align="left">FALSE</td>
-<td align="right">0.8669775</td>
-<td align="right">0.8501314</td>
-<td align="right">0.0297406</td>
-<td align="right">0.0439445</td>
-<td align="right">0.0168462</td>
-<td align="right">0.0513326</td>
-<td align="right">0.8719450</td>
-<td align="right">0.0193906</td>
-<td align="right">47</td>
-<td align="right">0.8546889</td>
-<td align="right">0.8563151</td>
-<td align="right">0.0304657</td>
-<td align="right">0.0354467</td>
-<td align="right">-0.0016262</td>
-<td align="right">0.0355416</td>
-<td align="right">0.8989828</td>
-<td align="right">0.0160300</td>
-<td align="right">35</td>
-<td align="right">0.0383260</td>
-<td align="right">0.4489825</td>
-<td align="right">0.8572605</td>
-<td align="right">-0.5176180</td>
-<td align="right">-0.0492048</td>
-<td align="right">0.4195695</td>
-</tr>
-<tr class="even">
-<td align="left">textual =~ x4</td>
-<td align="left">TRUE</td>
-<td align="right">0.8648254</td>
-<td align="right">0.8946437</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.0298183</td>
-<td align="right">NA</td>
-<td align="right">0.9339295</td>
-<td align="right">NA</td>
-<td align="right">1</td>
-<td align="right">0.8716300</td>
-<td align="right">0.8615848</td>
-<td align="right">0.0326125</td>
-<td align="right">0.0207676</td>
-<td align="right">0.0100452</td>
-<td align="right">0.0256734</td>
-<td align="right">0.9339842</td>
-<td align="right">0.0093798</td>
-<td align="right">13</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.4119970</td>
-<td align="right">0.3674260</td>
-<td align="right">1.1393677</td>
-</tr>
-<tr class="odd">
-<td align="left">textual =~ x5</td>
-<td align="left">FALSE</td>
-<td align="right">0.8514611</td>
-<td align="right">0.8519180</td>
-<td align="right">0.0280074</td>
-<td align="right">0.0369743</td>
-<td align="right">-0.0004569</td>
-<td align="right">0.0477099</td>
-<td align="right">0.8726788</td>
-<td align="right">0.0194915</td>
-<td align="right">47</td>
-<td align="right">0.8550010</td>
-<td align="right">0.8550136</td>
-<td align="right">0.0260599</td>
-<td align="right">0.0307248</td>
-<td align="right">-0.0000126</td>
-<td align="right">0.0387586</td>
-<td align="right">0.8997112</td>
-<td align="right">0.0158819</td>
-<td align="right">35</td>
-<td align="right">-0.4182078</td>
-<td align="right">-0.0139309</td>
-<td align="right">0.3904216</td>
-<td align="right">-0.4689614</td>
-<td align="right">-0.0004420</td>
-<td align="right">0.4680806</td>
-</tr>
-<tr class="even">
-<td align="left">textual =~ x5</td>
-<td align="left">TRUE</td>
-<td align="right">0.8694681</td>
-<td align="right">0.8908168</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.0213486</td>
-<td align="right">NA</td>
-<td align="right">0.9332166</td>
-<td align="right">NA</td>
-<td align="right">1</td>
-<td align="right">0.8496163</td>
-<td align="right">0.8566644</td>
-<td align="right">0.0331852</td>
-<td align="right">0.0237045</td>
-<td align="right">-0.0070481</td>
-<td align="right">0.0370661</td>
-<td align="right">0.9339691</td>
-<td align="right">0.0097313</td>
-<td align="right">13</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-1.0137278</td>
-<td align="right">-0.2444089</td>
-<td align="right">0.5299348</td>
-</tr>
-<tr class="odd">
-<td align="left">textual =~ x6</td>
-<td align="left">FALSE</td>
-<td align="right">0.8468883</td>
-<td align="right">0.8290735</td>
-<td align="right">0.0381496</td>
-<td align="right">0.0378183</td>
-<td align="right">0.0178147</td>
-<td align="right">0.0677965</td>
-<td align="right">0.8725943</td>
-<td align="right">0.0192872</td>
-<td align="right">47</td>
-<td align="right">0.8455601</td>
-<td align="right">0.8373898</td>
-<td align="right">0.0287805</td>
-<td align="right">0.0321847</td>
-<td align="right">0.0081703</td>
-<td align="right">0.0483640</td>
-<td align="right">0.9010567</td>
-<td align="right">0.0160099</td>
+<td align="right">0.5155323</td>
+<td align="right">0.5340874</td>
+<td align="right">0.1024393</td>
+<td align="right">0.1110071</td>
+<td align="right">-0.0185551</td>
+<td align="right">0.1006941</td>
+<td align="right">0.8726280</td>
+<td align="right">0.0233905</td>
+<td align="right">49</td>
+<td align="right">0.5434488</td>
+<td align="right">0.5399202</td>
+<td align="right">0.0860741</td>
+<td align="right">0.0910850</td>
+<td align="right">0.0035286</td>
+<td align="right">0.0686122</td>
+<td align="right">0.8979054</td>
+<td align="right">0.0193627</td>
 <td align="right">37</td>
-<td align="right">0.0578285</td>
-<td align="right">0.4690023</td>
-<td align="right">0.8776969</td>
-<td align="right">-0.1910727</td>
-<td align="right">0.2676134</td>
-<td align="right">0.7244605</td>
+<td align="right">-0.5700038</td>
+<td align="right">-0.1737217</td>
+<td align="right">0.2234607</td>
+<td align="right">-0.4160470</td>
+<td align="right">0.0398196</td>
+<td align="right">0.4954103</td>
 </tr>
 <tr class="even">
-<td align="left">textual =~ x6</td>
-<td align="left">TRUE</td>
-<td align="right">0.7849773</td>
-<td align="right">0.8562152</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.0712378</td>
-<td align="right">NA</td>
-<td align="right">0.9329684</td>
-<td align="right">NA</td>
-<td align="right">1</td>
-<td align="right">0.8421588</td>
-<td align="right">0.8224623</td>
-<td align="right">0.0203906</td>
-<td align="right">0.0306025</td>
-<td align="right">0.0196965</td>
-<td align="right">0.0380059</td>
-<td align="right">0.9359887</td>
-<td align="right">0.0108119</td>
-<td align="right">11</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.1189320</td>
-<td align="right">0.7574751</td>
-<td align="right">1.6163994</td>
-</tr>
-<tr class="odd">
-<td align="left">visual =~ x1</td>
+<td align="left">speed =~ x8</td>
 <td align="left">FALSE</td>
-<td align="right">0.7700782</td>
-<td align="right">0.7886599</td>
-<td align="right">0.0965642</td>
-<td align="right">0.0788431</td>
-<td align="right">-0.0185817</td>
-<td align="right">0.0973834</td>
-<td align="right">0.8719450</td>
-<td align="right">0.0193906</td>
-<td align="right">47</td>
-<td align="right">0.7841545</td>
-<td align="right">0.7634440</td>
-<td align="right">0.0794597</td>
-<td align="right">0.0821147</td>
-<td align="right">0.0207104</td>
-<td align="right">0.0619684</td>
-<td align="right">0.8989828</td>
-<td align="right">0.0160300</td>
-<td align="right">35</td>
-<td align="right">-0.6156791</td>
-<td align="right">-0.2107958</td>
-<td align="right">0.1952253</td>
-<td align="right">-0.2150997</td>
-<td align="right">0.2563235</td>
-<td align="right">0.7258804</td>
-</tr>
-<tr class="even">
-<td align="left">visual =~ x1</td>
-<td align="left">TRUE</td>
-<td align="right">0.7875655</td>
-<td align="right">0.8275776</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.0400121</td>
-<td align="right">NA</td>
-<td align="right">0.9339295</td>
-<td align="right">NA</td>
-<td align="right">1</td>
-<td align="right">0.8054239</td>
-<td align="right">0.8114691</td>
-<td align="right">0.0947926</td>
-<td align="right">0.0607034</td>
-<td align="right">-0.0060451</td>
-<td align="right">0.0979502</td>
-<td align="right">0.9339842</td>
-<td align="right">0.0093798</td>
-<td align="right">13</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.8442213</td>
-<td align="right">-0.0759494</td>
-<td align="right">0.6938949</td>
-</tr>
-<tr class="odd">
-<td align="left">visual =~ x2</td>
-<td align="left">FALSE</td>
-<td align="right">0.4308230</td>
-<td align="right">0.4174841</td>
-<td align="right">0.1296573</td>
-<td align="right">0.1515888</td>
-<td align="right">0.0133389</td>
-<td align="right">0.2452758</td>
-<td align="right">0.8727770</td>
-<td align="right">0.0193976</td>
+<td align="right">0.7276924</td>
+<td align="right">0.7573577</td>
+<td align="right">0.1102847</td>
+<td align="right">0.1241547</td>
+<td align="right">-0.0296653</td>
+<td align="right">0.1489417</td>
+<td align="right">0.8805311</td>
+<td align="right">0.0218941</td>
 <td align="right">46</td>
-<td align="right">0.4632235</td>
-<td align="right">0.4182589</td>
-<td align="right">0.0817303</td>
-<td align="right">0.0937008</td>
-<td align="right">0.0449647</td>
-<td align="right">0.1036093</td>
-<td align="right">0.9006589</td>
-<td align="right">0.0165168</td>
-<td align="right">36</td>
-<td align="right">-0.3146068</td>
-<td align="right">0.0945687</td>
-<td align="right">0.5032202</td>
-<td align="right">0.0400193</td>
-<td align="right">0.5114300</td>
-<td align="right">0.9793074</td>
+<td align="right">0.7004700</td>
+<td align="right">0.6823121</td>
+<td align="right">0.1009293</td>
+<td align="right">0.1172623</td>
+<td align="right">0.0181579</td>
+<td align="right">0.1105016</td>
+<td align="right">0.8994916</td>
+<td align="right">0.0194974</td>
+<td align="right">35</td>
+<td align="right">-0.6622766</td>
+<td align="right">-0.2526328</td>
+<td align="right">0.1584017</td>
+<td align="right">-0.3039790</td>
+<td align="right">0.1659756</td>
+<td align="right">0.6347162</td>
+</tr>
+<tr class="odd">
+<td align="left">speed =~ x9</td>
+<td align="left">FALSE</td>
+<td align="right">0.6978155</td>
+<td align="right">0.6564884</td>
+<td align="right">0.1981377</td>
+<td align="right">0.1786341</td>
+<td align="right">0.0413271</td>
+<td align="right">0.3520388</td>
+<td align="right">0.8870192</td>
+<td align="right">0.0199863</td>
+<td align="right">45</td>
+<td align="right">0.6752452</td>
+<td align="right">0.6824862</td>
+<td align="right">0.1151569</td>
+<td align="right">0.1203072</td>
+<td align="right">-0.0072411</td>
+<td align="right">0.1632992</td>
+<td align="right">0.9012400</td>
+<td align="right">0.0163324</td>
+<td align="right">35</td>
+<td align="right">-0.1959953</td>
+<td align="right">0.2190814</td>
+<td align="right">0.6329223</td>
+<td align="right">-0.5298989</td>
+<td align="right">-0.0614899</td>
+<td align="right">0.4073701</td>
 </tr>
 <tr class="even">
-<td align="left">visual =~ x2</td>
+<td align="left">speed =~ x9</td>
 <td align="left">TRUE</td>
-<td align="right">0.3411821</td>
-<td align="right">0.4563482</td>
+<td align="right">0.8941657</td>
+<td align="right">0.3008798</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-0.1151661</td>
+<td align="right">0.5932859</td>
 <td align="right">NA</td>
-<td align="right">0.9329755</td>
+<td align="right">0.9408700</td>
 <td align="right">NA</td>
 <td align="right">1</td>
-<td align="right">0.4163988</td>
-<td align="right">0.4657589</td>
-<td align="right">0.0466531</td>
-<td align="right">0.0338864</td>
-<td align="right">-0.0493601</td>
-<td align="right">0.0560608</td>
-<td align="right">0.9351296</td>
-<td align="right">0.0096493</td>
+<td align="right">0.7785847</td>
+<td align="right">0.6989504</td>
+<td align="right">0.0864893</td>
+<td align="right">0.0947871</td>
+<td align="right">0.0796343</td>
+<td align="right">0.1331760</td>
+<td align="right">0.9344652</td>
+<td align="right">0.0059226</td>
 <td align="right">11</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2.1131151</td>
-<td align="right">-1.2106207</td>
-<td align="right">-0.2829408</td>
+<td align="right">-0.0105510</td>
+<td align="right">0.8776762</td>
+<td align="right">1.7461240</td>
 </tr>
 <tr class="odd">
-<td align="left">visual =~ x3</td>
+<td align="left">textual =~ x4</td>
 <td align="left">FALSE</td>
-<td align="right">0.5906416</td>
-<td align="right">0.6082272</td>
-<td align="right">0.1051082</td>
-<td align="right">0.1023544</td>
-<td align="right">-0.0175856</td>
-<td align="right">0.1581816</td>
-<td align="right">0.8751812</td>
-<td align="right">0.0188804</td>
+<td align="right">0.8488074</td>
+<td align="right">0.8519628</td>
+<td align="right">0.0359748</td>
+<td align="right">0.0369844</td>
+<td align="right">-0.0031555</td>
+<td align="right">0.0554233</td>
+<td align="right">0.8726280</td>
+<td align="right">0.0233905</td>
+<td align="right">49</td>
+<td align="right">0.8522914</td>
+<td align="right">0.8434594</td>
+<td align="right">0.0267093</td>
+<td align="right">0.0356342</td>
+<td align="right">0.0088320</td>
+<td align="right">0.0431107</td>
+<td align="right">0.8979054</td>
+<td align="right">0.0193627</td>
+<td align="right">37</td>
+<td align="right">-0.4824273</td>
+<td align="right">-0.0864911</td>
+<td align="right">0.3098946</td>
+<td align="right">-0.1784590</td>
+<td align="right">0.2804751</td>
+<td align="right">0.7374835</td>
+</tr>
+<tr class="even">
+<td align="left">textual =~ x5</td>
+<td align="left">FALSE</td>
+<td align="right">0.8582843</td>
+<td align="right">0.8507448</td>
+<td align="right">0.0306713</td>
+<td align="right">0.0318217</td>
+<td align="right">0.0075395</td>
+<td align="right">0.0457939</td>
+<td align="right">0.8731847</td>
+<td align="right">0.0227801</td>
+<td align="right">49</td>
+<td align="right">0.8569264</td>
+<td align="right">0.8511186</td>
+<td align="right">0.0273821</td>
+<td align="right">0.0299808</td>
+<td align="right">0.0058078</td>
+<td align="right">0.0379178</td>
+<td align="right">0.8981079</td>
+<td align="right">0.0190159</td>
+<td align="right">37</td>
+<td align="right">-0.1568105</td>
+<td align="right">0.2412489</td>
+<td align="right">0.6380622</td>
+<td align="right">-0.2552866</td>
+<td align="right">0.2022855</td>
+<td align="right">0.6584622</td>
+</tr>
+<tr class="odd">
+<td align="left">textual =~ x6</td>
+<td align="left">FALSE</td>
+<td align="right">0.8403641</td>
+<td align="right">0.8404920</td>
+<td align="right">0.0353721</td>
+<td align="right">0.0340657</td>
+<td align="right">-0.0001279</td>
+<td align="right">0.0591080</td>
+<td align="right">0.8721832</td>
+<td align="right">0.0233245</td>
+<td align="right">50</td>
+<td align="right">0.8437153</td>
+<td align="right">0.8386882</td>
+<td align="right">0.0291706</td>
+<td align="right">0.0326905</td>
+<td align="right">0.0050271</td>
+<td align="right">0.0476299</td>
+<td align="right">0.8990952</td>
+<td align="right">0.0195358</td>
+<td align="right">39</td>
+<td align="right">-0.3956674</td>
+<td align="right">-0.0036837</td>
+<td align="right">0.3883188</td>
+<td align="right">-0.2828570</td>
+<td align="right">0.1622651</td>
+<td align="right">0.6063249</td>
+</tr>
+<tr class="even">
+<td align="left">visual =~ x1</td>
+<td align="left">FALSE</td>
+<td align="right">0.7742946</td>
+<td align="right">0.7593658</td>
+<td align="right">0.0775136</td>
+<td align="right">0.0820158</td>
+<td align="right">0.0149288</td>
+<td align="right">0.0758471</td>
+<td align="right">0.8726280</td>
+<td align="right">0.0233905</td>
+<td align="right">49</td>
+<td align="right">0.7677537</td>
+<td align="right">0.7724092</td>
+<td align="right">0.0948673</td>
+<td align="right">0.0935933</td>
+<td align="right">-0.0046555</td>
+<td align="right">0.0758661</td>
+<td align="right">0.8979054</td>
+<td align="right">0.0193627</td>
+<td align="right">37</td>
+<td align="right">-0.2102524</td>
+<td align="right">0.1870856</td>
+<td align="right">0.5834545</td>
+<td align="right">-0.5049871</td>
+<td align="right">-0.0494047</td>
+<td align="right">0.4065201</td>
+</tr>
+<tr class="odd">
+<td align="left">visual =~ x2</td>
+<td align="left">FALSE</td>
+<td align="right">0.4252274</td>
+<td align="right">0.3918061</td>
+<td align="right">0.1469866</td>
+<td align="right">0.1389058</td>
+<td align="right">0.0334213</td>
+<td align="right">0.2584529</td>
+<td align="right">0.8734142</td>
+<td align="right">0.0243278</td>
 <td align="right">47</td>
-<td align="right">0.5886538</td>
-<td align="right">0.6020687</td>
-<td align="right">0.0847882</td>
-<td align="right">0.0829074</td>
-<td align="right">-0.0134149</td>
-<td align="right">0.1097833</td>
-<td align="right">0.8995286</td>
-<td align="right">0.0160942</td>
-<td align="right">36</td>
-<td align="right">-0.5741064</td>
-<td align="right">-0.1695159</td>
-<td align="right">0.2359915</td>
-<td align="right">-0.6221369</td>
-<td align="right">-0.1599808</td>
-<td align="right">0.3033124</td>
+<td align="right">0.4210925</td>
+<td align="right">0.4287983</td>
+<td align="right">0.0803780</td>
+<td align="right">0.0830939</td>
+<td align="right">-0.0077058</td>
+<td align="right">0.1165811</td>
+<td align="right">0.8966079</td>
+<td align="right">0.0188937</td>
+<td align="right">35</td>
+<td align="right">-0.1726336</td>
+<td align="right">0.2337100</td>
+<td align="right">0.6387937</td>
+<td align="right">-0.5627055</td>
+<td align="right">-0.0942633</td>
+<td align="right">0.3748700</td>
 </tr>
 <tr class="even">
 <td align="left">visual =~ x3</td>
-<td align="left">TRUE</td>
-<td align="right">0.5168868</td>
-<td align="right">0.6375004</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.1206136</td>
-<td align="right">NA</td>
-<td align="right">0.9329547</td>
-<td align="right">NA</td>
-<td align="right">1</td>
-<td align="right">0.5717125</td>
-<td align="right">0.5662468</td>
-<td align="right">0.1041502</td>
-<td align="right">0.0906602</td>
-<td align="right">0.0054657</td>
-<td align="right">0.1611422</td>
-<td align="right">0.9344905</td>
-<td align="right">0.0094129</td>
-<td align="right">12</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-0.7449740</td>
-<td align="right">0.0559790</td>
-<td align="right">0.8556678</td>
+<td align="left">FALSE</td>
+<td align="right">0.6029723</td>
+<td align="right">0.6090537</td>
+<td align="right">0.1129652</td>
+<td align="right">0.0730771</td>
+<td align="right">-0.0060814</td>
+<td align="right">0.1537330</td>
+<td align="right">0.8758328</td>
+<td align="right">0.0231698</td>
+<td align="right">49</td>
+<td align="right">0.6042525</td>
+<td align="right">0.5780365</td>
+<td align="right">0.0720538</td>
+<td align="right">0.0738452</td>
+<td align="right">0.0262160</td>
+<td align="right">0.1016194</td>
+<td align="right">0.8981127</td>
+<td align="right">0.0192111</td>
+<td align="right">38</td>
+<td align="right">-0.4598334</td>
+<td align="right">-0.0639241</td>
+<td align="right">0.3323176</td>
+<td align="right">-0.0951940</td>
+<td align="right">0.3593448</td>
+<td align="right">0.8114973</td>
 </tr>
 </tbody>
 </table>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">saved_boot_partial</span><span class="op">$</span><span class="va">boot_effects</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <colgroup>
-<col width="11%">
-<col width="11%">
-<col width="17%">
-<col width="50%">
-<col width="8%">
+<col width="20%">
+<col width="20%">
+<col width="30%">
+<col width="14%">
+<col width="15%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">term</th>
 <th align="right">non_invariant</th>
 <th align="right">random_non_invariant</th>
-<th align="right">ifelse(is.na(random_non_invariant), 0,
-random_non_invariant)</th>
-<th align="right">h</th>
+<th align="right">h_nmi</th>
+<th align="right">h_mi</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="left">speed =~ x7</td>
-<td align="right">0.94</td>
-<td align="right">0.70</td>
-<td align="right">0.70</td>
-<td align="right">0.6643454</td>
+<td align="right">0.98</td>
+<td align="right">0.74</td>
+<td align="right">0.7863475</td>
+<td align="right">-0.7863475</td>
 </tr>
 <tr class="even">
 <td align="left">speed =~ x8</td>
-<td align="right">0.88</td>
-<td align="right">0.66</td>
-<td align="right">0.66</td>
-<td align="right">0.5375836</td>
+<td align="right">0.92</td>
+<td align="right">0.70</td>
+<td align="right">0.5857664</td>
+<td align="right">-0.5857664</td>
 </tr>
 <tr class="odd">
 <td align="left">speed =~ x9</td>
-<td align="right">0.88</td>
-<td align="right">0.68</td>
-<td align="right">0.68</td>
-<td align="right">0.4950452</td>
+<td align="right">0.90</td>
+<td align="right">0.70</td>
+<td align="right">0.5157784</td>
+<td align="right">-0.5157784</td>
 </tr>
 <tr class="even">
 <td align="left">textual =~ x4</td>
-<td align="right">0.94</td>
-<td align="right">0.70</td>
-<td align="right">0.70</td>
-<td align="right">0.6643454</td>
+<td align="right">0.98</td>
+<td align="right">0.74</td>
+<td align="right">0.7863475</td>
+<td align="right">-0.7863475</td>
 </tr>
 <tr class="odd">
 <td align="left">textual =~ x5</td>
-<td align="right">0.94</td>
-<td align="right">0.70</td>
-<td align="right">0.70</td>
-<td align="right">0.6643454</td>
+<td align="right">0.98</td>
+<td align="right">0.74</td>
+<td align="right">0.7863475</td>
+<td align="right">-0.7863475</td>
 </tr>
 <tr class="even">
 <td align="left">textual =~ x6</td>
-<td align="right">0.94</td>
-<td align="right">0.74</td>
-<td align="right">0.74</td>
-<td align="right">0.5752075</td>
+<td align="right">1.00</td>
+<td align="right">0.78</td>
+<td align="right">0.9764105</td>
+<td align="right">-0.9764105</td>
 </tr>
 <tr class="odd">
 <td align="left">visual =~ x1</td>
-<td align="right">0.94</td>
-<td align="right">0.70</td>
-<td align="right">0.70</td>
-<td align="right">0.6643454</td>
+<td align="right">0.98</td>
+<td align="right">0.74</td>
+<td align="right">0.7863475</td>
+<td align="right">-0.7863475</td>
 </tr>
 <tr class="even">
 <td align="left">visual =~ x2</td>
-<td align="right">0.92</td>
-<td align="right">0.72</td>
-<td align="right">0.72</td>
-<td align="right">0.5416845</td>
+<td align="right">0.94</td>
+<td align="right">0.70</td>
+<td align="right">0.6643454</td>
+<td align="right">-0.6643454</td>
 </tr>
 <tr class="odd">
 <td align="left">visual =~ x3</td>
-<td align="right">0.94</td>
-<td align="right">0.72</td>
-<td align="right">0.72</td>
-<td align="right">0.6202635</td>
+<td align="right">0.98</td>
+<td align="right">0.76</td>
+<td align="right">0.7401513</td>
+<td align="right">-0.7401513</td>
 </tr>
 </tbody>
 </table>
@@ -2218,10 +2033,10 @@ random_non_invariant)</th>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">saved_boot_partial</span><span class="op">$</span><span class="va">density_plot</span></span>
-<span><span class="co">#&gt; Picking joint bandwidth of 0.0215</span></span>
-<span><span class="co">#&gt; Picking joint bandwidth of 0.0271</span></span>
-<span><span class="co">#&gt; Picking joint bandwidth of 0.0368</span></span>
-<span><span class="co">#&gt; Picking joint bandwidth of 0.0306</span></span></code></pre></div>
+<span><span class="co">#&gt; Picking joint bandwidth of NaN</span></span>
+<span><span class="co">#&gt; Picking joint bandwidth of 0.0294</span></span>
+<span><span class="co">#&gt; Picking joint bandwidth of 0.0361</span></span>
+<span><span class="co">#&gt; Picking joint bandwidth of 0.0287</span></span></code></pre></div>
 <p><img src="Package-Tutorial_files/figure-html/unnamed-chunk-8-3.png" width="700"></p>
 <p>I can see very few models are considered “invariant” when
 individually relaxing the parameters. These three parameters are the
@@ -2250,6 +2065,17 @@ York: The Guilford Press.
 Rosseel, Yves. 2012. <span>“Lavaan: An r Package for Structural Equation
 Modeling.”</span> <em>Journal of Statistical Software</em> 48 (1): 1–36.
 <a href="https://doi.org/10.18637/jss.v048.i02" class="external-link">https://doi.org/10.18637/jss.v048.i02</a>.
+</div>
+<div id="ref-stark2006" class="csl-entry">
+Stark, Stephen, Oleksandr S. Chernyshenko, and Fritz Drasgow. 2006.
+<span>“Detecting Differential Item Functioning with Confirmatory Factor
+Analysis and Item Response Theory: Toward a Unified Strategy.”</span>
+<em>Journal of Applied Psychology</em> 91 (6): 1292–1306. <a href="https://doi.org/10.1037/0021-9010.91.6.1292" class="external-link">https://doi.org/10.1037/0021-9010.91.6.1292</a>.
+</div>
+<div id="ref-tay2015" class="csl-entry">
+Tay, Louis, Adam W Meade, and Mengyang Cao. 2015. <span>“An Overview and
+Practical Guide to IRT Measurement Equivalence Analysis.”</span>
+<em>Organizational Research Methods</em> 18 (1): 3–46. <a href="https://doi.org/10.1177/1094428114553062" class="external-link">https://doi.org/10.1177/1094428114553062</a>.
 </div>
 </div>
 </div>

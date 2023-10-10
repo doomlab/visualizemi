@@ -24,18 +24,22 @@ library(introdataviz)
 library(ggridges)
 ```
 
+Measurement invariance is typically analyzed using confirmatory factor analysis, specifically, multi-group confirmatory factor analysis (MGCFA) or less often, with item response theory [@stark2006; @tay2015]. First, the model is examined with the factor structure proposed for the latent and observed variables, and then often these models are assessed for each group separately. The two models are then combined together into one nested CFA in order to determine configural invariance. Configural invariance tests if the proposed factor structure is the same between groups. In this model, all other estimated parameters are allowed to vary between groups. The general approach is to use this model as a baseline for starting a sequential analysis of further restrictions between group parameters (i.e., more restrictive with each step). However, models without configural invariance can occur and often point to misspecification for the observed and latent variables within one group (i.e., cross loadings of items onto other latent variables or correlated error terms for one group only).
+
+Next, the estimated parameter between each observed variable and its latent variable are constrained to be equal between groups for metric invariance. For example, item 1's factor loading must be equal to item 1's factor loading for each group. This test examines if the items represent the same relationship to the latent variable, or if specific items have weaker or stronger relationships in specific groups. Finding non-invariance at this stage generally points to items that have different functioning or interpretation for one group. At the third model, the item intercepts (i.e., item averages) are restricted across groups for scalar invariance. Scalar non-invariance would indicate that items have the same strength of relationship with their latent variable, just one group has a higher overall average on that item. Last (although sometimes not used), we may consider constraining error variances for each observed variable to be equal across groups for strict invariance. Strict non-invariance can occur when one group has a higher range of values on the observed variable, thus showing a larger variance. For example, if using a Likert scale, one group may use the full 1 to 7 range (creating a flatter distribution and larger variance), while the other group shows a ceiling effect of only using 5 to 7.
+
 ## Multigroup analysis
 
 If you are interested in measurement invariance, you would likely want to conduct a multigroup factor analysis (MGCFA) to compare two or more groups on proposed model structure. This generally consists of steps of models with increasing restrictions between groups to constrain parameters to be equal across groups. Invariance is achieved by showing that two groups have equal values on the model, and non-invariance occurs when they do not show the same values. Check out excellent book chapters by @brown2015 and @kline2016 to learn more about theoretical backgrounds and ideas behind MGCFA.
 
 In *R*, MGCFA can be achieved by using `lavaan` - a structural equation modeling package that covers a large range of possible modeling options [@rosseel2012]. Their tutorial on multigroups can be found at: <https://lavaan.ugent.be/tutorial/groups.html>. `visualizemi` includes a MGCFA convenience function that flexibly calculates the following:
 
-1) An overall model without groups
-2) Individual group based models
-3) A "configural" model wherein both groups are put together into one model with no constraints
-4) User entered constraint based models 
+1)  An overall model without groups
+2)  Individual group based models
+3)  A "configural" model wherein both groups are put together into one model with no constraints
+4)  User entered constraint based models
 
-Additionally, the function returns a list of coefficients and fit statistics for comparison using your favorite rules for determining measurement invariance. 
+Additionally, the function returns a list of coefficients and fit statistics for comparison using your favorite rules for determining measurement invariance.
 
 ```{r}
 HS.model <- ' visual  =~ x1 + x2 + x3
@@ -57,7 +61,7 @@ saved_mgcfa <- mgcfa(model = HS.model,
 # you only have the correlation or covariance matrices
 ```
 
-These outputs get very long, so here's a summary of what's available - models are full `lavaan` model structure, so you can use `summary()`, `parameterEstimates()`, `fitmeasures()`, and so on with them. They are commented out to save space in this tutorial. 
+These outputs get very long, so here's a summary of what's available - models are full `lavaan` model structure, so you can use `summary()`, `parameterEstimates()`, `fitmeasures()`, and so on with them. They are commented out to save space in this tutorial.
 
 ```{r}
 kable(head(saved_mgcfa$model_coef))
@@ -82,7 +86,7 @@ saved_mgcfa$model_overall
 
 ## Partial invariance
 
-Partial invariance occurs when *most* of the parameter estimates are the same across groups but not all of them. `visualizemi` includes a useful function to investigate which items are non-invariant. If I use one of the more popular rules of them for invariance - $\Delta$CFI <= .01 - then I could decide that the loadings are not equal across groups in comparison to the configural model. I would use the `partial_mi()` function to figure out how the items change the model with their constraint is relaxed individually across groups. You get a table of fit indices to review for your favorite invariance rules and each model saved separately to determine partial invariance. 
+Partial invariance occurs when *most* of the parameter estimates are the same across groups but not all of them. `visualizemi` includes a useful function to investigate which items are non-invariant. If I use one of the more popular rules of them for invariance - $\Delta$CFI \<= .01 - then I could decide that the loadings are not equal across groups in comparison to the configural model. I would use the `partial_mi()` function to figure out how the items change the model with their constraint is relaxed individually across groups. You get a table of fit indices to review for your favorite invariance rules and each model saved separately to determine partial invariance.
 
 ```{r}
                             # a saved model from mgcfa or any lavaan model
@@ -106,7 +110,7 @@ kable(saved_partial$fit_table)
 # and so on
 ```
 
-In our case, one parameter `speed =~ x9` clearly can improve the overall model to be equal to the original configural model. I could then keep exploring steps and/or partial invariance for other constraints. 
+In our case, one parameter `speed =~ x9` clearly can improve the overall model to be equal to the original configural model. I could then keep exploring steps and/or partial invariance for other constraints.
 
 ```{r}
 saved_mgcfa.partial <- mgcfa(model = HS.model,
@@ -126,7 +130,7 @@ kable(saved_mgcfa.partial$model_fit)
 
 ## Plotting MI
 
-The package then includes a visualization tool for the measurement invariance. Plots are parameter specific, so we could examine `speed =~ x9` for the strength and direction of the invariance. 
+The package then includes a visualization tool for the measurement invariance. Plots are parameter specific, so we could examine `speed =~ x9` for the strength and direction of the invariance.
 
 ```{r}
                           # a table of tidy coefficients, use broom::tidy 
@@ -156,35 +160,33 @@ saved_mi_plots <- plot_mi(data_coef = saved_mgcfa.partial$model_coef,
 saved_mi_plots$complete
 ```
 
-The plots are explained at length in the preprint: https://osf.io/9hzfe/ but short version:
+The plots are explained at length in the preprint: <https://osf.io/9hzfe/> but short version:
 
 Observed variable information:
 
-  1) Intercepts are plotted on the left side as the dots on the y-axis
-  2) Loadings are plotted as theh slope of the lines on the left hand side
-  3) Residuals are plotted as the geom violin on the left hand side
-  
+1)  Intercepts are plotted on the left side as the dots on the y-axis
+2)  Loadings are plotted as theh slope of the lines on the left hand side
+3)  Residuals are plotted as the geom violin on the left hand side
+
 Latent variable information:
 
-  4) LV distribution is plotted on the right hand side
-  5) LV means are represented as the solid lines for each group 
+4)  LV distribution is plotted on the right hand side
+5)  LV means are represented as the solid lines for each group
 
-This plot is the combination of three smaller plots, and they are included separately so you can modify them with `ggplot2` if you like. We can clearly see that group 1 has a shallower slope (i.e., a smaller factor loading) than group 2. 
+This plot is the combination of three smaller plots, and they are included separately so you can modify them with `ggplot2` if you like. We can clearly see that group 1 has a shallower slope (i.e., a smaller factor loading) than group 2.
 
 ## Pre-registration, replication, and registered reports
 
 Several unanswered questions:
 
-  1) How big is this effect? 
-    - We could use $d_{macs}$, however this statistic is based on intercepts *and* loadings simultaneously. 
-  2) How much should I expect this model to replicate? 
-    - If I believe that this data is truly representative of the population, how does this model replicate in comparison to a random model? 
+1)  How big is this effect? - We could use $d_{macs}$, however this statistic is based on intercepts *and* loadings simultaneously.
+2)  How much should I expect this model to replicate? - If I believe that this data is truly representative of the population, how does this model replicate in comparison to a random model?
 
-This information would give you an idea of what to expect in a potential replication and/o pre-registration. 
+This information would give you an idea of what to expect in a potential replication and/o pre-registration.
 
-### Replication at model level 
+### Replication at model level
 
-Here we will bootstrap the mgcfa procedure to determine the "replication rate" if our data was representative of the true population. The data is bootstrapped and the steps for MGCFA are examined for invariance. This model is compared to a model of the bootstrapped data with random group assignment. 
+Here we will bootstrap the mgcfa procedure to determine the "replication rate" if our data was representative of the true population. The data is bootstrapped and the steps for MGCFA are examined for invariance. This model is compared to a model of the bootstrapped data with random group assignment.
 
 ```{r}
 saved_boot_model <- bootstrap_rr(
@@ -196,7 +198,8 @@ saved_boot_model <- bootstrap_rr(
   model = HS.model,
   # group variable in the dataset
   group = "sex", 
-  # nubmer of bootstraps, 100 to make this run faster for examples
+  # number of bootstraps
+  # this is set to a low number to compile quickly for cran
   nboot = 50,
   # name of the fit measure you want to use, make sure it's lavaan
   invariance_index = "cfi",
@@ -209,20 +212,20 @@ saved_boot_model <- bootstrap_rr(
 kable(saved_boot_model)
 ```
 
-This data tells you the proportion of values that were non-invariant for the bootstrapped and random models. Note: this may not add up to `n_boot` because sometimes models fail to converge. `h` represents the effect size comparison of the two proportions (much like a $d$ value). We can see that it's likely that our model would not show invariance for all parameters compared to a random model for the loadings. 
+This data tells you the proportion of values that were non-invariant for the bootstrapped and random models. Note: this may not add up to `n_boot` because sometimes models fail to converge. `h` represents the effect size comparison of the two proportions (much like a $d$ value). We can see that it's likely that our model would not show invariance for all parameters compared to a random model for the loadings.
 
 ### Size of the effect and replication at parameter level
 
-In this function, we will bootstrap our model (up to the step we claim partial invariance) to determine our replication rate and effect size. Note: this function is slow depending on the number parameters, bootstraps, and computer size. 
+In this function, we will bootstrap our model (up to the step we claim partial invariance) to determine our replication rate and effect size. Note: this function is slow depending on the number parameters, bootstraps, and computer size.
 
-1) The saved dataframe of the estimates for each group's *standardized* loading using `std.all` for the original model and the random model. This value is like a $\beta$ or effect size - so we can use it to determine what the effect size of the difference would be if they were constrained to equal or not. This dataframe is included if you want to make your own graphs.
-2) The summary dataframe of the bootstrapped results. Note: you will see NAs when you do not have enough values that fall into the "invariant" or "non-invariant" separation. Effect sizes are calculated with `calculate_d()` assuming between subjects grouping (group 1 versus group 2) using the average standardized parameter as the mean and the average standard deviation of that parameter as the standard deviation. A minimum of 10% of bootstraps is required for the effect size to calculate. 
-3) A forest plot style graph of the mean group differences. 
-4) A forest plot style graph of the effect sizes of the group differences with emphasis on the number of bootstraps included in each calculation. 
+1)  The saved dataframe of the estimates for each group's *standardized* loading using `std.all` for the original model and the random model. This value is like a $\beta$ or effect size - so we can use it to determine what the effect size of the difference would be if they were constrained to equal or not. This dataframe is included if you want to make your own graphs.
+2)  The summary dataframe of the bootstrapped results. Note: you will see NAs when you do not have enough values that fall into the "invariant" or "non-invariant" separation. Effect sizes are calculated with `calculate_d()` assuming between subjects grouping (group 1 versus group 2) using the average standardized parameter as the mean and the average standard deviation of that parameter as the standard deviation. A minimum of 10% of bootstraps is required for the effect size to calculate.
+3)  A forest plot style graph of the mean group differences.
+4)  A forest plot style graph of the effect sizes of the group differences with emphasis on the number of bootstraps included in each calculation.
 
 Note: invariance is FALSE for non-invariant, TRUE for invariant using: `(original model fit - model relaxed fit) <= rule`
 
-The last three are ggplot objects, so you can edit them from the saved output. 
+The last three are ggplot objects, so you can edit them from the saved output.
 
 ```{r}
 saved_boot_partial <- bootstrapped_partial(
@@ -264,7 +267,6 @@ saved_boot_partial$effect_invariance_plot
 saved_boot_partial$density_plot
 ```
 
-I can see very few models are considered "invariant" when individually relaxing the parameters. These three parameters are the same ones that showed as the top items to relax to create an invariant model BUT that doesn't bootstrap consistently, so it may not replicate. The randomly assigned group models show an even split of replication, which you would expect, given it's "random". 
+I can see very few models are considered "invariant" when individually relaxing the parameters. These three parameters are the same ones that showed as the top items to relax to create an invariant model BUT that doesn't bootstrap consistently, so it may not replicate. The randomly assigned group models show an even split of replication, which you would expect, given it's "random".
 
-The boot effects dataframe gives me a potential size of the non-invariant effect compared to random, illuminating the items that may not replicate, and my boot summary gives me effect sizes differences between groups for bootstrapped and random data. I could subtract these differences to tell how big one might expect them to be as compared to random or simply review them in my invariance plots. 
-
+The boot effects dataframe gives me a potential size of the non-invariant effect compared to random, illuminating the items that may not replicate, and my boot summary gives me effect sizes differences between groups for bootstrapped and random data. I could subtract these differences to tell how big one might expect them to be as compared to random or simply review them in my invariance plots.

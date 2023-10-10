@@ -326,7 +326,8 @@ bootstrapped_partial <- function(saved_model,
            random_non_invariant = random_non_invariant / nboot,
            non_invariant = ifelse(is.na(non_invariant), 0, non_invariant),
            random_non_invariant = ifelse(is.na(random_non_invariant), 0, random_non_invariant),
-           h = 2*(asin(sqrt(non_invariant))-asin(sqrt(random_non_invariant))))
+           h_nmi = 2*(asin(sqrt(non_invariant))-asin(sqrt(random_non_invariant))),
+           h_mi = 2*(asin(sqrt(1-non_invariant))-asin(sqrt(1-random_non_invariant))))
 
 
   for (i in 1:nrow(boot_summary)){

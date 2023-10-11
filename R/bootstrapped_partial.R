@@ -187,11 +187,11 @@ bootstrapped_partial <- function(saved_model,
 
     # bootstrap the data
     DF <- data
+    random_group_results <- sample(DF[ , group], size = nrow(DF),
+                                   replace = TRUE)
     temp.DF <- DF %>%
       slice_sample(n = nrow(DF), replace = TRUE) %>%
-      mutate(random_group = sample(DF[ , group],
-                                   size = nrow(DF),
-                                   replace = TRUE))
+      mutate(random_group = random_group_results)
 
     # loop over model and update with relaxed parameter
     temp.parameters <- list()

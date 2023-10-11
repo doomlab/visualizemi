@@ -144,11 +144,12 @@ bootstrap_rr <- function(saved_configural,
     while(total_break < 2){
       total_break <- 0
 
+      random_group_results <- sample(DF[ , group], size = nrow(DF),
+                                     replace = TRUE)
+
       temp.DF <- DF %>%
         slice_sample(n = nrow(DF), replace = TRUE) %>%
-        mutate(random_group = sample(DF[ , group],
-                                     size = nrow(DF),
-                                     replace = TRUE))
+        mutate(random_group = random_group_results)
 
       # update the model
       temp.fit <- test_model_configural(saved_configural, temp.DF, group, model)

@@ -102,10 +102,10 @@
 #' # saved_boot$invariance_plot
 #' # saved_boot$effect_invariance_plot
 
-#' @rdname bootstrapped_partial
+#' @rdname bootstrap_partial
 #' @export
 
-bootstrapped_partial <- function(saved_model,
+bootstrap_partial <- function(saved_model,
                                  data,
                                  model,
                                  group,
@@ -327,13 +327,17 @@ bootstrapped_partial <- function(saved_model,
            non_invariant = ifelse(is.na(non_invariant), 0, non_invariant),
            random_non_invariant = ifelse(is.na(random_non_invariant), 0, random_non_invariant),
            h_nmi = 2*(asin(sqrt(non_invariant))-asin(sqrt(random_non_invariant))),
-           h_mi = 2*(asin(sqrt(1-non_invariant))-asin(sqrt(1-random_non_invariant))))
+           h_mi = 2*(asin(sqrt(1-non_invariant))-asin(sqrt(1-random_non_invariant))),
+           h_nmi_p = h_nmi / pi,
+           h_mi_p = h_mi / pi)
 
 
   for (i in 1:nrow(boot_summary)){
 
     if(!is.na(boot_summary$n_boot[i]) &
-       boot_summary$n_boot[i] >= nboot*.10){
+       boot_summary$n_boot[i] >= nboot*.10 &
+       boot_summary$sd_boot_1[i] != 0 &
+       boot_summary$sd_boot_2[i] != 0){
       temp <- calculate_d(m1 = boot_summary$mean_boot_1[i],
                           m2 = boot_summary$mean_boot_2[i],
                           sd1 = boot_summary$sd_boot_1[i],
@@ -351,7 +355,9 @@ bootstrapped_partial <- function(saved_model,
     }
 
     if(!is.na(boot_summary$n_random[i]) &
-       boot_summary$n_random[i] >= nboot*.10){
+       boot_summary$n_random[i] >= nboot*.10 &
+       boot_summary$sd_random_1[i] != 0 &
+       boot_summary$sd_random_2[i] != 0){
       temp <- calculate_d(m1 = boot_summary$mean_random_1[i],
                           m2 = boot_summary$mean_random_2[i],
                           sd1 = boot_summary$sd_random_1[i],

@@ -1,10 +1,10 @@
-## ---- include = FALSE-------
+## ---- include = FALSE----------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-## ----setup------------------
+## ----setup---------------------------------------
 library(visualizemi)
 library(lavaan)
 library(knitr)
@@ -12,7 +12,7 @@ library(ggplot2)
 library(introdataviz)
 library(ggridges)
 
-## ---------------------------
+## ------------------------------------------------
 HS.model <- ' visual  =~ x1 + x2 + x3
               textual =~ x4 + x5 + x6
               speed   =~ x7 + x8 + x9 '
@@ -31,7 +31,7 @@ saved_mgcfa <- mgcfa(model = HS.model,
 # note you can also include sample.nobs, sample.cov, and sample.mean if 
 # you only have the correlation or covariance matrices
 
-## ---------------------------
+## ------------------------------------------------
 kable(head(saved_mgcfa$model_coef))
 
 kable(saved_mgcfa$model_fit)
@@ -51,7 +51,7 @@ saved_mgcfa$model_overall
 # saved_mgcfa$invariance_models$model.intercepts
 # saved_mgcfa$invariance_models$model.residuals
 
-## ---------------------------
+## ------------------------------------------------
                             # a saved model from mgcfa or any lavaan model
 saved_partial <- partial_mi(saved_model = saved_mgcfa$invariance_models$model.loadings,
                             # dataframe of the original data
@@ -72,7 +72,7 @@ kable(saved_partial$fit_table)
 # saved_partial$models$`visual =~ x2`
 # and so on
 
-## ---------------------------
+## ------------------------------------------------
 saved_mgcfa.partial <- mgcfa(model = HS.model,
                      # dataset in data frame 
                      data = HolzingerSwineford1939, 
@@ -87,7 +87,7 @@ saved_mgcfa.partial <- mgcfa(model = HS.model,
 
 kable(saved_mgcfa.partial$model_fit)
 
-## ---------------------------
+## ------------------------------------------------
                           # a table of tidy coefficients, use broom::tidy 
                           # and create "model" column if you don't use mgcfa
                           # be sure to use the partial model or one with out 
@@ -114,7 +114,7 @@ saved_mi_plots <- plot_mi(data_coef = saved_mgcfa.partial$model_coef,
 
 saved_mi_plots$complete
 
-## ---------------------------
+## ------------------------------------------------
 saved_boot_model <- bootstrap_rr(
   # saved configural model to start at
   saved_configural = saved_mgcfa$model_configural,
@@ -137,8 +137,8 @@ saved_boot_model <- bootstrap_rr(
 
 kable(saved_boot_model)
 
-## ---------------------------
-saved_boot_partial <- bootstrapped_partial(
+## ------------------------------------------------
+saved_boot_partial <- bootstrap_partial(
   # the model you want to test 
   # use the model before your invariant one 
   # similar set up to partial_mi

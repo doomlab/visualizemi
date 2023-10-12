@@ -240,7 +240,9 @@ bootstrap_rr <- function(saved_configural,
     mutate(non_invariant = ifelse(is.na(non_invariant), 0, non_invariant),
            random_non_invariant = ifelse(is.na(random_non_invariant), 0, random_non_invariant),
            h_nmi = 2*(asin(sqrt(non_invariant))-asin(sqrt(random_non_invariant))),
-           h_mi = 2*(asin(sqrt(1-non_invariant))-asin(sqrt(1-random_non_invariant))))
+           h_mi = 2*(asin(sqrt(1-non_invariant))-asin(sqrt(1-random_non_invariant))),
+           h_nmi_p = h_nmi / pi,
+           h_mi_p = h_mi / pi)
 
   # print out results/suggestions
   return(boot_DF)

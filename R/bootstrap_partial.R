@@ -234,10 +234,10 @@ bootstrap_partial <- function(saved_model,
                  random_fit = unname(fitmeasures(random.model, invariance_index)))
       }
 
-
     }
 
     boot_results[[p]] <- bind_rows(temp.parameters)
+    cat(paste("Finished Bootstrap Number: ", p, "\n", sep = ""))
 
   }
 

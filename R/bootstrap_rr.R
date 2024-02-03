@@ -205,6 +205,7 @@ bootstrap_rr <- function(saved_configural,
 
     boot_results[[i]] <- c(comparison, unlist(invariance.models))
     random_boot_results[[i]] <- c(random_comparison, unlist(random.invariance.models))
+    cat(paste("Finished Bootstrap Number: ", p, "\n", sep = ""))
 
     }
 

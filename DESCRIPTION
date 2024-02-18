@@ -19,8 +19,8 @@ RoxygenNote: 7.2.3
 URL: http://www.aggieerin.com/visualizemi/
 Collate: 
     'globals.R'
+    'bootstrap_model.R'
     'bootstrap_partial.R'
-    'bootstrap_rr.R'
     'calculate_d.R'
     'mgcfa.R'
     'noncentral_t.R'

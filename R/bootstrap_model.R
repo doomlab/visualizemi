@@ -59,7 +59,7 @@
 #'  meanstructure = TRUE,
 #'  group = "sex")
 #'
-#' # saved_boot <- bootstrap_rr(
+#' # saved_boot <- bootstrap_model(
 #' #  saved_configural = saved_configural,
 #' #  data = HolzingerSwineford1939,
 #' #  model = HS.model,
@@ -71,10 +71,10 @@
 #'
 #' #  saved_boot
 #'
-#' @rdname bootstrap_rr
+#' @rdname bootstrap_model
 #' @export
 
-bootstrap_rr <- function(saved_configural,
+bootstrap_model <- function(saved_configural,
                          data,
                          model,
                          group,

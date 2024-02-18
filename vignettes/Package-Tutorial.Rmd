@@ -189,7 +189,7 @@ This information would give you an idea of what to expect in a potential replica
 Here we will bootstrap the mgcfa procedure to determine the "replication rate" if our data was representative of the true population. The data is bootstrapped and the steps for MGCFA are examined for invariance. This model is compared to a model of the bootstrapped data with random group assignment.
 
 ```{r}
-saved_boot_model <- bootstrap_rr(
+saved_boot_model <- bootstrap_model(
   # saved configural model to start at
   saved_configural = saved_mgcfa$model_configural,
   # dataset for the analysis
@@ -200,7 +200,7 @@ saved_boot_model <- bootstrap_rr(
   group = "sex", 
   # number of bootstraps
   # this is set to a low number to compile quickly for cran
-  nboot = 50,
+  nboot = 10,
   # name of the fit measure you want to use, make sure it's lavaan
   invariance_index = "cfi",
   # rule for the difference in fit indices
@@ -240,7 +240,7 @@ saved_boot_partial <- bootstrap_partial(
   # the grouping variable column
   group = "sex",
   # run more, but this package vignette needs to knit fast
-  nboot = 50,
+  nboot = 10,
   # what index are you using for invariance?
   # match this to lavaan's name under fitmeasures()
   invariance_index = "cfi",

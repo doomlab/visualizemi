@@ -92,6 +92,9 @@ partial_mi <- function(saved_model,
     stop("You must define all parameters!")
   }
 
+  # deal with tibbles
+  data <- as.data.frame(data)
+
   # get partial_step
   op_filter <- ifelse(
     partial_step == "loadings", "=~", ifelse(

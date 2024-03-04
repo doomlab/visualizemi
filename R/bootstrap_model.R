@@ -89,6 +89,9 @@ bootstrap_model <- function(saved_configural,
   if(missing(saved_configural)){stop("You must include the saved model.")}
   if(saved_configural@Data@data.type != "full"){stop("You must have full data for this function.")}
 
+  # deal with tibbles
+  data <- as.data.frame(data)
+
   # get the data
   DF <- data
 

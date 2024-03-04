@@ -109,6 +109,9 @@ mgcfa <- function(model,
 
   if(!is.null(data)){
 
+    # deal with tibbles
+    data <- as.data.frame(data)
+
     # group information
     group_names <- unique(data[ , group])
     data$group <- data[ , group]

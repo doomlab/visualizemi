@@ -153,6 +153,9 @@ bootstrap_partial <- function(saved_model,
     )
   )
 
+  # deal with tibbles
+  data <- as.data.frame(data)
+
   # first get the data to change
   partial.values <- tidy(saved_model) %>%
     filter(op == op_filter) %>%

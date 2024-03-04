@@ -108,6 +108,8 @@ plot_mi <- function(data_coef, # output from model_coef
          y limits, model results, and the name of the latent variable.")
   }
 
+  requireNamespace("ggplot2", quietly = TRUE)
+
   # calculate cutoff
   cutoff <- qt(p = (1-conf.level)/2,
                df = sum(unlist(model_results@Data@nobs)),

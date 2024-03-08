@@ -128,7 +128,7 @@ plot_mi <- function(data_coef, # output from model_coef
   # first get the data
   graph.data <- data_coef %>% # put in tidy coefficients
     filter(model == model_step) %>% # pick a model
-    filter(grepl(paste0(item_name, " "), term)) %>%  # pick a question
+    filter(grepl(paste0(item_name, " |", item_name, "$"), term)) %>%  # pick a question
     mutate(group = factor(group, levels = names(table(data_coef$group)),
                           labels = group_labels)) %>%
     filter(group %in% plot_groups)

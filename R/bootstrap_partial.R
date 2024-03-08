@@ -379,7 +379,7 @@ bootstrap_partial <- function(saved_model,
 
     }
 
-  boot_summary_long <- bind_rows(
+  boot_summary_long <- suppressWarnings(bind_rows(
     boot_summary %>%
       select(term, invariant, n_boot,
              starts_with("d_boot")) %>%
@@ -395,7 +395,7 @@ bootstrap_partial <- function(saved_model,
              d_low = d_random_low,
              d = d_random,
              d_high = d_random_high) %>%
-      mutate(type = "Random")
+      mutate(type = "Random"))
   )
 
   effect_invariance_plot <-
@@ -414,7 +414,7 @@ bootstrap_partial <- function(saved_model,
     coord_flip()
 
     DF_long <-
-    bind_rows(
+    suppressWarnings(bind_rows(
       boot_DF %>%
         select(term, boot_index_difference, boot_1, boot_2) %>%
         pivot_longer(cols = c(boot_1, boot_2),
@@ -435,7 +435,7 @@ bootstrap_partial <- function(saved_model,
              group = gsub("boot_2|random_2", "Group 2", group),
              invariant = factor(invariant,
                                 levels = c("TRUE", "FALSE"),
-                                labels = c("Invariant", "Non-Invariant")))
+                                labels = c("Invariant", "Non-Invariant"))))
 
   density_plot <- ggplot(DF_long, aes(x = estimate, y = term, fill = group)) +
     geom_density_ridges(

@@ -132,7 +132,7 @@ kable(saved_mgcfa.partial$model_fit)
 
 The package then includes a visualization tool for the measurement invariance. Plots are parameter specific, so we could examine `speed =~ x9` for the strength and direction of the invariance.
 
-```{r}
+```{r warning = F}
                           # a table of tidy coefficients, use broom::tidy 
                           # and create "model" column if you don't use mgcfa
                           # be sure to use the partial model or one with out 
@@ -240,7 +240,7 @@ saved_boot_partial <- bootstrap_partial(
   # the grouping variable column
   group = "sex",
   # run more, but this package vignette needs to knit fast
-  nboot = 10,
+  nboot = 20,
   # what index are you using for invariance?
   # match this to lavaan's name under fitmeasures()
   invariance_index = "cfi",

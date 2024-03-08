@@ -286,12 +286,38 @@ plot_mi <- function(data_coef, # output from model_coef
     nrow = 1
   ))
 
+  # march 8, 2024 get_legend from cowplot
+  # ggplot2 update broke the legends
+  get_legend <- function(plot, legend = NULL) {
+
+    gt <- ggplotGrob(plot)
+
+    pattern <- "guide-box"
+    if (!is.null(legend)) {
+      pattern <- paste0(pattern, "-", legend)
+    }
+
+    indices <- grep(pattern, gt$layout$name)
+
+    not_empty <- !vapply(
+      gt$grobs[indices],
+      inherits, what = "zeroGrob",
+      FUN.VALUE = logical(1)
+    )
+    indices <- indices[not_empty]
+
+    if (length(indices) > 0) {
+      return(gt$grobs[[indices[1]]])
+    }
+    return(NULL)
+  }
+
   # get the legend
-  legend_b <- suppressWarnings(get_legend(
+  legend_b <- get_legend(
     intercept_plot +
       guides(color = guide_legend(nrow = 1)) +
       theme(legend.position = "bottom")
-  ))
+  )
 
   # send out the plot
   together <- suppressWarnings(plot_grid(prow, legend_b, ncol = 1, rel_heights = c(1, .1)))

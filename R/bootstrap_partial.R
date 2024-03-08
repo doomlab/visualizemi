@@ -130,6 +130,7 @@ bootstrap_partial <- function(saved_model,
   # thresholds: when using ordered models |
 
   tol = 1e-5
+  requireNamespace("lavaan", quietly = TRUE)
 
   if(missing(saved_model)){stop("You must include a saved lavaan model.")}
   if(missing(invariance_index)){stop("You must includedan invariance_index")}

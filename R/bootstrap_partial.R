@@ -316,7 +316,7 @@ bootstrap_partial <- function(saved_model,
                   .groups = "keep") %>%
         rename(invariant = random_index_difference),
       by = c("term", "invariant")
-    )
+    ) %>% as.data.frame()
 
   boot_effects <- boot_summary %>%
     ungroup() %>%

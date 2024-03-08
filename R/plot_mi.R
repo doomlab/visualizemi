@@ -109,6 +109,7 @@ plot_mi <- function(data_coef, # output from model_coef
   }
 
   requireNamespace("ggplot2", quietly = TRUE)
+  requireNamespace("introdataviz", quietly = TRUE)
 
   # calculate cutoff
   cutoff <- qt(p = (1-conf.level)/2,
@@ -270,7 +271,7 @@ plot_mi <- function(data_coef, # output from model_coef
   y_range = abs(y_limits[2] - y_limits[1])
 
   # line up the two plots
-  prow <- plot_grid(
+  prow <- suppressWarnings(plot_grid(
     intercept_plot +
       ggtitle("Item Invariance") +
       theme(legend.position = "none") +
@@ -283,17 +284,17 @@ plot_mi <- function(data_coef, # output from model_coef
     align = 'vh',
     hjust = -1,
     nrow = 1
-  )
+  ))
 
   # get the legend
-  legend_b <- get_legend(
+  legend_b <- suppressWarnings(get_legend(
     intercept_plot +
       guides(color = guide_legend(nrow = 1)) +
       theme(legend.position = "bottom")
-  )
+  ))
 
   # send out the plot
-  together <- plot_grid(prow, legend_b, ncol = 1, rel_heights = c(1, .1))
+  together <- suppressWarnings(plot_grid(prow, legend_b, ncol = 1, rel_heights = c(1, .1)))
 
   return(list("complete" = together,
               "intercept" = intercept_plot,

@@ -234,8 +234,8 @@ bootstrap_partial <- function(saved_model,
           pivot_wider(id_cols = term,
                       names_from = c("type", "group"),
                       values_from = "std.all") %>%
-          mutate(boot_fit = unname(fitmeasures(temp.model, invariance_index)),
-                 random_fit = unname(fitmeasures(random.model, invariance_index)))
+          mutate(boot_fit = unname(lavaan::fitmeasures(temp.model, invariance_index)),
+                 random_fit = unname(lavaan::fitmeasures(random.model, invariance_index)))
       }
 
     }

@@ -176,21 +176,43 @@ bootstrap_partial <- function(saved_model,
                          model, group.equal, ...) {
     tryCatch(
       {
-          temp.model <- lavaan::update(saved_model,
-                                         data = temp.DF,
-                                         group = group,
-                                         group.partial = partial.values[i],
-                                         model = model,
-                                         group.equal = group.equal,
-                                       ...)
-          return(temp.model)
+        # Extract ... as a list
+        dots <- list(...)
 
-      }, warning = function(x){
-        # just move on
-        return(temp.model <- NULL)
-      }, error = function(x){
-        # just move on
-        return(temp.model <- NULL)
+        # Check if group.partial exists in ...
+        if ("group.partial" %in% names(dots)) {
+          # Combine the existing group.partial with partial.values[i]
+          combined_group_partial <- c(dots$group.partial, partial.values[i])
+        } else {
+          # Use only partial.values[i] if group.partial is not in ...
+          combined_group_partial <- partial.values[i]
+        }
+
+        # Debugging: Print the combined group.partial for verification
+        # print(paste("Testing model with group.partial:", paste(combined_group_partial, collapse = ", ")))
+
+        # Update the model with the combined group.partial
+        temp.model <- lavaan::update(
+          object = saved_model,
+          data = temp.DF,
+          group = group,
+          group.partial = combined_group_partial,
+          model = model,
+          group.equal = group.equal,
+          ...
+        )
+
+        return(temp.model)
+      },
+      warning = function(x) {
+        # Handle warnings gracefully
+        # print("Warning occurred; returning NULL.")
+        return(NULL)
+      },
+      error = function(x) {
+        # Handle errors gracefully
+        # print("Error occurred; returning NULL.")
+        return(NULL)
       }
     )
   }

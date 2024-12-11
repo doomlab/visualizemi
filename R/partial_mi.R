@@ -121,14 +121,34 @@ partial_mi <- function(saved_model,
   partial.save <- list()
   fit.save <- list()
 
-  for (i in 1:length(partial.values)){
-    partial.save[[partial.values[i]]] <- lavaan::update(object = saved_model,
-                                                        data = data,
-                                                        model = model,
-                                                        group = group,
-                                                        group.equal = group.equal,
-                                                        group.partial = partial.values[i],
-                                                        ...)
+  for (i in 1:length(partial.values)) {
+    # Extract ... as a list
+    dots <- list(...)
+
+    # Check if group.partial exists in ...
+    if ("group.partial" %in% names(dots)) {
+      # Combine the existing group.partial with partial.values[i]
+      combined_group_partial <- c(dots$group.partial, partial.values[i])
+    } else {
+      # Use only partial.values[i] if group.partial is not in ...
+      combined_group_partial <- partial.values[i]
+    }
+
+    # Debugging: Print the combined group.partial for verification
+    # print(paste("Updating with group.partial:", paste(combined_group_partial, collapse = ", ")))
+
+    # Update the model
+    partial.save[[partial.values[i]]] <- lavaan::update(
+      object = saved_model,
+      data = data,
+      model = model,
+      group = group,
+      group.equal = group.equal,
+      group.partial = combined_group_partial,
+      ...
+    )
+
+    # Save fit measures
     fit.save[[partial.values[i]]] <- fitmeasures(partial.save[[partial.values[i]]])
   }
 

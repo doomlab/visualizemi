@@ -108,7 +108,7 @@ bootstrap_model <- function(saved_configural,
   test_model_configural <- function(temp.fit, temp.DF, group, model, ...) {
     tryCatch(
       {
-          temp.partials <- update(temp.fit,
+          temp.partials <- lavaan::update(temp.fit,
                                   model = model,
                                   data = temp.DF,
                                   group = group,
@@ -129,7 +129,7 @@ bootstrap_model <- function(saved_configural,
     tryCatch(
       {
 
-          temp.partials <- update(temp.fit,
+          temp.partials <- lavaan::update(temp.fit,
                                   data = temp.DF,
                                   model,
                                   group.equal = group.equal,

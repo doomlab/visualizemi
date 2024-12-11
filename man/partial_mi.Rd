@@ -4,7 +4,7 @@
 \alias{partial_mi}
 \title{Calculation of Partial Invariance by Parameter}
 \usage{
-partial_mi(saved_model, data, model, group, group.equal, partial_step)
+partial_mi(saved_model, data, model, group, group.equal, partial_step, ...)
 }
 \arguments{
 \item{saved_model}{A \code{lavaan} model with
@@ -29,6 +29,9 @@ Note that for some models this may estimate more than you
 want (i.e., the syntax for factor covariances is \code{~~}
 as well as residuals) but these can be excluded from the
 from the final dataframe.}
+
+\item{...}{Any other lavaan arguments you would like to
+add.}
 }
 \value{
 Models with each constraint relaxed individually

@@ -14,7 +14,8 @@ bootstrap_partial(
   invariance_rule,
   invariance_compare,
   partial_step,
-  group.equal
+  group.equal,
+  ...
 )
 }
 \arguments{
@@ -60,6 +61,14 @@ from the final dataframe.}
 bootstrapping - use this parameter in case you want to
 estimate effect size for a specific partial step
 but continue to hold all other things constrained}
+
+\item{...}{Other arguments to be included to configure
+the \code{cfa} function from \code{lavaan}. For
+example, you can include arguments for ordered
+models, clustering, sampling.weights, or estimators.
+Note: the model is updated with this information,
+so if you had it in the mgcfa model, no need to
+specify it again}
 }
 \value{
 A set of graphs and dataframes.

@@ -44,6 +44,13 @@
 #' bootstrapping - use this parameter in case you want to
 #' estimate effect size for a specific partial step
 #' but continue to hold all other things constrained
+#' @param ... Other arguments to be included to configure
+#' the \code{cfa} function from \code{lavaan}. For
+#' example, you can include arguments for ordered
+#' models, clustering, sampling.weights, or estimators.
+#' Note: the model is updated with this information,
+#' so if you had it in the mgcfa model, no need to
+#' specify it again
 #'
 #' @return A set of graphs and dataframes.
 #'
@@ -106,15 +113,16 @@
 #' @export
 
 bootstrap_partial <- function(saved_model,
-                                 data,
-                                 model,
-                                 group,
-                                 nboot = 1000,
-                                 invariance_index,
-                                 invariance_rule,
-                                 invariance_compare,
-                                 partial_step,
-                                 group.equal){
+                             data,
+                             model,
+                             group,
+                             nboot = 1000,
+                             invariance_index,
+                             invariance_rule,
+                             invariance_compare,
+                             partial_step,
+                             group.equal,
+                             ...){
 
 
   # Deal with missing information  ------------------------------------------
@@ -165,7 +173,7 @@ bootstrap_partial <- function(saved_model,
 
   # deal with busted models
   test_model <- function(saved_model, temp.DF, i, partial.values, group,
-                         model, group.equal) {
+                         model, group.equal, ...) {
     tryCatch(
       {
           temp.model <- lavaan::update(saved_model,
@@ -173,7 +181,8 @@ bootstrap_partial <- function(saved_model,
                                          group = group,
                                          group.partial = partial.values[i],
                                          model = model,
-                                         group.equal = group.equal)
+                                         group.equal = group.equal,
+                                       ...)
           return(temp.model)
 
       }, warning = function(x){
@@ -209,12 +218,14 @@ bootstrap_partial <- function(saved_model,
                                temp.DF, i,
                                partial.values,
                                group,
-                               model, group.equal)
+                               model, group.equal,
+                               ...)
       random.model <- test_model(saved_model,
                                  temp.DF, i,
                                  partial.values,
                                  "random_group",
-                                 model, group.equal)
+                                 model, group.equal,
+                                 ...)
 
       # get estimates of relaxed parameters
       if(!is.null(temp.model) & !is.null(random.model)){

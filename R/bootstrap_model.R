@@ -30,6 +30,13 @@
 #' like to impose as a vector, in order. This argument
 #' is the same as \code{lavaan} syntax. For example,
 #' c("loadings", "intercepts", "residuals").
+#' @param ... Other arguments to be included to configure
+#' the \code{cfa} function from \code{lavaan}. For
+#' example, you can include arguments for ordered
+#' models, clustering, sampling.weights, or estimators.
+#' Note: the model is updated with this information,
+#' so if you had it in the mgcfa model, no need to
+#' specify it again.
 #'
 #' @return A dataframe of the bootstrapped results.
 #' This set includes the proportion of invariant tests
@@ -81,7 +88,8 @@ bootstrap_model <- function(saved_configural,
                          nboot = 1000,
                          invariance_index,
                          invariance_rule,
-                         group.equal){
+                         group.equal,
+                         ...){
 
 
   tol = 1e-5
@@ -97,13 +105,14 @@ bootstrap_model <- function(saved_configural,
 
   # try catch
   # test the model
-  test_model_configural <- function(temp.fit, temp.DF, group, model) {
+  test_model_configural <- function(temp.fit, temp.DF, group, model, ...) {
     tryCatch(
       {
           temp.partials <- update(temp.fit,
                                   model = model,
                                   data = temp.DF,
-                                  group = group)
+                                  group = group,
+                                  ...)
           return(temp.partials)
 
       }, warning = function(x){
@@ -116,7 +125,7 @@ bootstrap_model <- function(saved_configural,
     )
   }
 
-  test_model <- function(temp.fit, temp.DF, group.equal, group, model) {
+  test_model <- function(temp.fit, temp.DF, group.equal, group, model, ...) {
     tryCatch(
       {
 
@@ -124,7 +133,8 @@ bootstrap_model <- function(saved_configural,
                                   data = temp.DF,
                                   model,
                                   group.equal = group.equal,
-                                  group = group)
+                                  group = group,
+                                  ...)
           return(temp.partials)
 
       }, warning = function(x){
@@ -155,8 +165,8 @@ bootstrap_model <- function(saved_configural,
         mutate(random_group = random_group_results)
 
       # update the model
-      temp.fit <- test_model_configural(saved_configural, temp.DF, group, model)
-      random.fit <- test_model_configural(saved_configural, temp.DF, "random_group", model)
+      temp.fit <- test_model_configural(saved_configural, temp.DF, group, model, ...)
+      random.fit <- test_model_configural(saved_configural, temp.DF, "random_group", model, ...)
 
       # get rule comparison
       if(!is.null(temp.fit)){
@@ -182,8 +192,8 @@ bootstrap_model <- function(saved_configural,
       temp.partials <- NULL
       random.partials <- NULL
 
-      temp.partials <- test_model(temp.fit, temp.DF, group.equal[1:p], group, model)
-      random.partials <- test_model(random.fit, temp.DF, group.equal[1:p], "random_group", model)
+      temp.partials <- test_model(temp.fit, temp.DF, group.equal[1:p], group, model, ...)
+      random.partials <- test_model(random.fit, temp.DF, group.equal[1:p], "random_group", model, ...)
 
       # test if not null
       if(!is.null(temp.partials)){

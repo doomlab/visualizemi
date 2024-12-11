@@ -23,6 +23,8 @@
 #' want (i.e., the syntax for factor covariances is \code{~~}
 #' as well as residuals) but these can be excluded from the
 #' from the final dataframe.
+#' @param ... Any other lavaan arguments you would like to
+#' add.
 #'
 #' @return Models with each constraint relaxed individually
 #' and a summary table of fit indices from each model.
@@ -71,7 +73,8 @@ partial_mi <- function(saved_model,
                        model,
                        group,
                        group.equal,
-                       partial_step){
+                       partial_step,
+                       ...){
 
 
   # Deal with missing information  ------------------------------------------
@@ -124,7 +127,8 @@ partial_mi <- function(saved_model,
                                                         model = model,
                                                         group = group,
                                                         group.equal = group.equal,
-                                                        group.partial = partial.values[i])
+                                                        group.partial = partial.values[i],
+                                                        ...)
     fit.save[[partial.values[i]]] <- fitmeasures(partial.save[[partial.values[i]]])
   }
 

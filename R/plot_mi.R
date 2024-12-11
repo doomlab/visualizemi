@@ -47,6 +47,7 @@
 #' @keywords multigroup cfa, sem, lavaan
 #' @import lavaan dplyr ggplot2 introdataviz
 #' @importFrom cowplot plot_grid get_legend
+#' @importFrom ggplot2 GeomViolin
 #' @include globals.R
 #'
 #' @examples

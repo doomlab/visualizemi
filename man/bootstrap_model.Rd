@@ -12,7 +12,8 @@ bootstrap_model(
   nboot = 1000,
   invariance_index,
   invariance_rule,
-  group.equal
+  group.equal,
+  ...
 )
 }
 \arguments{
@@ -45,6 +46,14 @@ numeric value.}
 like to impose as a vector, in order. This argument
 is the same as \code{lavaan} syntax. For example,
 c("loadings", "intercepts", "residuals").}
+
+\item{...}{Other arguments to be included to configure
+the \code{cfa} function from \code{lavaan}. For
+example, you can include arguments for ordered
+models, clustering, sampling.weights, or estimators.
+Note: the model is updated with this information,
+so if you had it in the mgcfa model, no need to
+specify it again.}
 }
 \value{
 A dataframe of the bootstrapped results.

@@ -1,6 +1,6 @@
 Package: visualizemi
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Visualizatons and Effect Sizes for Multigroup CFA
 Version: 0.1.0
 Authors@R: c(person("Erin M.", "Buchanan", role = c("aut", "cre"),
                      email = "buchananlab@gmail.com",
@@ -15,7 +15,7 @@ Description: A package the helps you calculate multigroup CFA,
 License: LGPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 URL: http://www.aggieerin.com/visualizemi/
 Collate: 
     'globals.R'

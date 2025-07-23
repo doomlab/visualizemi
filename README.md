@@ -5,7 +5,7 @@ A package for multigroup visualization and estimation of smallest effects for pr
 
 ```
 library(devtools)
-install_packages("doomlab/visualizemi")
+install_github("doomlab/visualizemi")
 ```
 
 ## Check out the vignettes!
